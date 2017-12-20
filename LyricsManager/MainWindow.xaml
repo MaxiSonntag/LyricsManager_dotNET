@@ -4,9 +4,108 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LyricsManager"
+        xmlns:viewModels="clr-namespace:LyricsManager.ViewModels"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid>
+        Title="MainWindow" Height="650" Width="800">
+    <Window.DataContext>
+        <viewModels:MainWindowViewModel />
+    </Window.DataContext>
+    
+    <DockPanel Margin="12">
+        <TextBlock
+            FontSize="14"
+            DockPanel.Dock="Top"
+            Text ="Songs"></TextBlock>
+
+        <ListBox
+            Name="ListBoxSongs"
+            MinWidth="240"
+            BorderThickness="0,0,0,0"
+            DockPanel.Dock="Left"
+            Focusable="True"
+            ItemsSource="{Binding Songs}"
+            SelectedItem="{Binding SelectedSong, Mode=TwoWay}">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                </Style>
+            </ListBox.ItemContainerStyle>
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="viewModels:SongViewModel">
+                    <DockPanel>
+                        <StackPanel Margin="{StaticResource MarginAllSides4}">
+                            <TextBlock FontSize="{StaticResource FontSizeLarge}">
+                                <Run Text="{Binding LyricSong}" />
+                                <Run Text=" - "></Run>
+                                <Run Text="{Binding LyricArtist}" />
+                            </TextBlock>
+                            <TextBlock FontSize="{StaticResource FontSizeNormal}">
+                                <Run Text="{Binding LyricRank}" />
+                            </TextBlock>
+                        </StackPanel>
+                    </DockPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <StackPanel
+            Margin="{StaticResource MarginTop12}"
+            HorizontalAlignment="Right"
+            DockPanel.Dock="Bottom"
+            Orientation="Horizontal">
+            <Button Content="_Neu" Command="{Binding NewCommand}" />
+            <Button
+                Margin="{StaticResource MarginLeft12}"
+                Command="{Binding DeleteCommand}"
+                Content="_Löschen" />
+            <Button
+                Margin="{StaticResource MarginLeft12}"
+                Command="{Binding SaveCommand}"
+                Content="_Speichern" />
+
+        </StackPanel>
+
+        <StackPanel
+                MinWidth="400"
+                Margin="{StaticResource MarginLeft12}">
+            <Label FontSize="{StaticResource FontSizeNormal}" Target="{Binding ElementName=TextBoxArtist}">_Artist</Label>
+            <TextBox
+                    Name="TextBoxArtist"
+                    Margin="{StaticResource MarginBottom12}"
+                    FontSize="{StaticResource FontSizeLarge}"
+                    Text="{Binding Path=SelectedSong.LyricArtist, Mode=TwoWay, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
+
+            <Label FontSize="{StaticResource FontSizeNormal}" Target="{Binding ElementName=TextBoxSong}">_Songe</Label>
+            <TextBox
+                    Name="TextBoxSong"
+                    Margin="{StaticResource MarginBottom12}"
+                    FontSize="{StaticResource FontSizeLarge}"
+                    Text="{Binding Path=SelectedSong.LyricSong, Mode=TwoWay, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
+
+            <Label FontSize="{StaticResource FontSizeNormal}" Target="{Binding ElementName=TextBoxLyric}">_Lyrics</Label>
+            <ScrollViewer
+                ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                <TextBox 
+                    ScrollViewer.VerticalScrollBarVisibility ="Visible"
+                    ScrollViewer.HorizontalScrollBarVisibility ="Auto"
+                    Name="TextBoxLyric"
+                    Margin="{StaticResource MarginBottom12}"
+                    FontSize="{StaticResource FontSizeLarge}"
+                    Text="{Binding SelectedSong.Lyric}"
+                    MaxHeight="350"/>
+            </ScrollViewer>
+            
+
+            <!--Image
+                    Width="128"
+                    Height="128"
+                    HorizontalAlignment="Left"
+                    Source="{Binding SelectedContact.PictureUri}" /-->
+
+        </StackPanel>
+
         
-    </Grid>
+        
+    </DockPanel>
+    
 </Window>
