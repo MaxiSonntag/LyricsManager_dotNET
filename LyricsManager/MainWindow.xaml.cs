@@ -28,6 +28,23 @@ namespace LyricsManager
             InitializeComponent();
             
         }
-        
+
+        private void NewButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            var context = DataContext as MainWindowViewModel;
+            context.NewCommand.Execute(null);
+        }
+
+        private void DeleteButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            var context = DataContext as MainWindowViewModel;
+            context.DeleteCommand.Execute(null);
+        }
+
+        private void SaveButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            var context = DataContext as MainWindowViewModel;
+            context.SaveCommand.Execute(null);
+        }
     }
 }

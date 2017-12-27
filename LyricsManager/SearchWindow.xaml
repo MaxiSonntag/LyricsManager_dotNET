@@ -1,0 +1,51 @@
+﻿<Window x:Class="LyricsManager.SearchWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LyricsManager"
+        xmlns:viewModels="clr-namespace:LyricsManager.ViewModels"
+        mc:Ignorable="d"
+        Title="Search Lyrics" Height="400" Width="500">
+    <Window.DataContext>
+        <viewModels:SearchWindowViewModel/>
+    </Window.DataContext>
+    
+    <StackPanel Margin="12">
+        <Label>Artist</Label>
+        <TextBox Text="{Binding EnteredArtist, Mode=TwoWay}"></TextBox>
+        <Label>Song</Label>
+        <TextBox Text="{Binding EnteredSong, Mode=TwoWay}"></TextBox>
+        <Button Content="Search"
+                Click="AcceptButton_OnClick"
+                Command="{Binding AcceptCommand}"></Button>
+        <ListBox
+            Name="ListBoxSongs"
+            MinWidth="240"
+            BorderThickness="0,0,0,0"
+            DockPanel.Dock="Left"
+            Focusable="True"
+            ItemsSource="{Binding SearchResults}"
+            SelectedItem="{Binding SelectedSearchViewModel, Mode=TwoWay}">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                </Style>
+            </ListBox.ItemContainerStyle>
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="viewModels:SongViewModel">
+                    <DockPanel>
+                        <StackPanel Margin="{StaticResource MarginAllSides4}">
+                            <TextBlock FontSize="{StaticResource FontSizeLarge}">
+                                <Run Text="{Binding LyricSong}" />
+                                <Run Text=" - "></Run>
+                                <Run Text="{Binding LyricArtist}" />
+                            </TextBlock>
+                        </StackPanel>
+                    </DockPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </StackPanel>
+
+</Window>

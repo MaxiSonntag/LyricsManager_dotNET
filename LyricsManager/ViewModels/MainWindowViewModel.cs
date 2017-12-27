@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Documents;
 using LyricsManager.Models;
 using LyricsManager.MVVM;
@@ -43,44 +44,17 @@ namespace LyricsManager.ViewModels
 
         private async Task LoadDataAsync()
         {
-            //await DownloadService.DownloadSongAsync("michael jackson", "bad");
-
             
             _allSongs = new List<SongViewModel>();
             var songs = await PersistencyService.LoadLyricsAsync();
-            /*List<Song> songs = new List<Song>
-            {
-                await DownloadService.DownloadSongAsync("michael jackson", "bad")
-            };*/
 
             songs.ToList().ForEach(s => _allSongs.Add(new SongViewModel(s)));
             Songs = new ObservableCollection<SongViewModel>(_allSongs);
             if (Songs.Count > 0)
                 SelectedSong = Songs[0];
-                
-
-            /*
-            _allSongs = new List<SongViewModel>
-            {
-                new SongViewModel(new Song
-                {
-                    LyricArtist = "Penis",
-                    LyricSong = "PenisSong",
-                    LyricChecksum = "1",
-                    TrackId = "1",
-                    LyricId = 1,
-                    LyricRank = 1,
-                    LyricUrl = "www.penis.com",
-                    Lyric = "penis penis Penis"
-                })
-            };
-            Songs = new ObservableCollection<SongViewModel>(_allSongs);
-            SelectedSong = Songs[0];
-
-            await Task.Run(SaveDataAsync);*/
         }
 
-        private async Task SaveDataAsync()
+        /*private async Task SaveDataAsync()
         {
             List<Song> list = new List<Song>();
             foreach (var song in _allSongs)
@@ -98,7 +72,7 @@ namespace LyricsManager.ViewModels
                 list.Add(s);
             }
             await PersistencyService.SaveLyricsAsync(list);
-        }
+        }*/
 
         private async void SaveCommandExecute(object obj)
         {
@@ -116,7 +90,8 @@ namespace LyricsManager.ViewModels
 
         private void NewCommandExecute(object obj)
         {
-            Console.WriteLine("#########################");
+            SearchWindow searchWindow = new SearchWindow();
+            searchWindow.ShowDialog();
             /*var newSong = new SongViewModel(new Song
             {
                 LyricSong = "",
@@ -127,11 +102,10 @@ namespace LyricsManager.ViewModels
                 LyricUrl = "",
                 Lyric = ""
             });
-            Console.WriteLine("-------------------------" + newSong.LyricId);
-
+            //_songs & _allSongs nicht verknüpft -> Binding klappt nicht wie es soll
+            _songs.Add(newSong);
             _allSongs.Add(newSong);
-            SelectedSong = newSong;
-            Console.WriteLine("-------------------------" + newSong.LyricId);*/
+            SelectedSong = newSong;*/
         }
 
         private void DeleteCommandExecute(object obj)
@@ -139,8 +113,11 @@ namespace LyricsManager.ViewModels
             Console.WriteLine("+-+-+-+-+--+-+-+-+-+-+");
             if (SelectedSong == null) return;
 
+            //_songs & _allSongs nicht verknüpft -> Binding klappt nicht wie es soll
             _allSongs.Remove(SelectedSong);
+            _songs.Remove(SelectedSong);
             Songs.Remove(SelectedSong);
         }
+
     }
 }

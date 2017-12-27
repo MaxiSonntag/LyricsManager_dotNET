@@ -53,17 +53,20 @@
             HorizontalAlignment="Right"
             DockPanel.Dock="Bottom"
             Orientation="Horizontal">
-            <Button Content="_Neu" Command="{Binding NewCommand}" />
+            <Button Click="NewButton_OnClick" Command="{Binding NewCommand}" Content="_New"></Button>
             <Button
                 Margin="{StaticResource MarginLeft12}"
+                Click="DeleteButton_OnClick"
                 Command="{Binding DeleteCommand}"
                 Content="_Löschen" />
             <Button
                 Margin="{StaticResource MarginLeft12}"
+                Click="SaveButton_OnClick"
                 Command="{Binding SaveCommand}"
                 Content="_Speichern" />
 
         </StackPanel>
+        
 
         <StackPanel
                 MinWidth="400"
@@ -95,12 +98,6 @@
                     MaxHeight="350"/>
             </ScrollViewer>
             
-
-            <!--Image
-                    Width="128"
-                    Height="128"
-                    HorizontalAlignment="Left"
-                    Source="{Binding SelectedContact.PictureUri}" /-->
 
         </StackPanel>
 
