@@ -18,14 +18,6 @@ namespace LyricsManager.ViewModels
         private ObservableCollection<SongViewModel> _songs;
         private SongViewModel _selectedSong;
 
-        public MainWindowViewModel()
-        {
-            Task.Run(LoadDataAsync);
-            DeleteCommand = new DelegateCommand(DeleteCommandExecute);
-            NewCommand = new DelegateCommand(NewCommandExecute);
-            SaveCommand = new DelegateCommand(SaveCommandExecute);
-        }
-
         public ObservableCollection<SongViewModel> Songs
         {
             get => _songs;
@@ -41,6 +33,18 @@ namespace LyricsManager.ViewModels
         public DelegateCommand DeleteCommand { get; set; }
         public DelegateCommand NewCommand { get; set; }
         public DelegateCommand SaveCommand { get; set; }
+        public DelegateCommand EditCommand { get; set; }
+
+        public MainWindowViewModel()
+        {
+            Task.Run(LoadDataAsync);
+            DeleteCommand = new DelegateCommand(DeleteCommandExecute);
+            NewCommand = new DelegateCommand(NewCommandExecute);
+            SaveCommand = new DelegateCommand(SaveCommandExecute);
+            EditCommand = new DelegateCommand(EditCommandExecute);
+        }
+
+        
 
         private async Task LoadDataAsync()
         {
@@ -51,7 +55,10 @@ namespace LyricsManager.ViewModels
             songs.ToList().ForEach(s => _allSongs.Add(new SongViewModel(s)));
             Songs = new ObservableCollection<SongViewModel>(_allSongs);
             if (Songs.Count > 0)
+            {
                 SelectedSong = Songs[0];
+            }
+                
         }
 
         /*private async Task SaveDataAsync()
@@ -90,7 +97,13 @@ namespace LyricsManager.ViewModels
 
         private void NewCommandExecute(object obj)
         {
-            SearchWindow searchWindow = new SearchWindow();
+            
+            SearchWindowViewModel vm = new SearchWindowViewModel();
+            SearchWindow searchWindow = new SearchWindow
+            {
+                DataContext = vm
+            };
+            vm.OnCloseRequest += (s, e) => HandleDialogWindowClose(searchWindow);
             searchWindow.ShowDialog();
             /*var newSong = new SongViewModel(new Song
             {
@@ -117,6 +130,26 @@ namespace LyricsManager.ViewModels
             _allSongs.Remove(SelectedSong);
             _songs.Remove(SelectedSong);
             Songs.Remove(SelectedSong);
+        }
+
+        private void EditCommandExecute(object obj)
+        {
+            EditWindowViewModel vm = new EditWindowViewModel(SelectedSong);
+            EditWindow editWindow = new EditWindow
+            {
+                DataContext = vm
+            };
+            vm.OnCloseRequest += (s, e) => HandleDialogWindowClose(editWindow);
+            int idx = _allSongs.IndexOf(SelectedSong);
+            vm.index = idx;
+            //vm.Song = SelectedSong;
+            editWindow.ShowDialog();
+        }
+
+        private void HandleDialogWindowClose(Window window)
+        {
+            window.Close();
+            Task.Run(LoadDataAsync);
         }
 
     }

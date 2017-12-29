@@ -1,4 +1,4 @@
-﻿<Window x:Class="LyricsManager.SearchWindow"
+﻿<Controls:MetroWindow x:Class="LyricsManager.SearchWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,22 +6,31 @@
         xmlns:local="clr-namespace:LyricsManager"
         xmlns:viewModels="clr-namespace:LyricsManager.ViewModels"
         mc:Ignorable="d"
-        Title="Search Lyrics" Height="400" Width="500">
-    <Window.DataContext>
+        Title="Search Lyrics" Height="620" Width="500"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro">
+    <Controls:MetroWindow.DataContext>
         <viewModels:SearchWindowViewModel/>
-    </Window.DataContext>
+    </Controls:MetroWindow.DataContext>
     
     <StackPanel Margin="12">
         <Label>Artist</Label>
         <TextBox Text="{Binding EnteredArtist, Mode=TwoWay}"></TextBox>
         <Label>Song</Label>
         <TextBox Text="{Binding EnteredSong, Mode=TwoWay}"></TextBox>
-        <Button Content="Search"
-                Click="AcceptButton_OnClick"
-                Command="{Binding AcceptCommand}"></Button>
+        <StackPanel Orientation="Horizontal"
+                    Margin="0,12,0,12"
+                    HorizontalAlignment="Right">
+            <Button Content="Search"
+                    Click="AcceptButton_OnClick"
+                    Command="{Binding SearchCommand}"></Button>
+            
+        </StackPanel>
+        
         <ListBox
             Name="ListBoxSongs"
             MinWidth="240"
+            MinHeight="350"
+            MaxHeight="350"
             BorderThickness="0,0,0,0"
             DockPanel.Dock="Left"
             Focusable="True"
@@ -35,8 +44,8 @@
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="viewModels:SongViewModel">
                     <DockPanel>
-                        <StackPanel Margin="{StaticResource MarginAllSides4}">
-                            <TextBlock FontSize="{StaticResource FontSizeLarge}">
+                        <StackPanel Margin="4,4,4,4">
+                            <TextBlock FontSize="18">
                                 <Run Text="{Binding LyricSong}" />
                                 <Run Text=" - "></Run>
                                 <Run Text="{Binding LyricArtist}" />
@@ -46,6 +55,22 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
+        
+        <StackPanel Orientation="Horizontal"
+                    Margin="0,12,0,12"
+                    HorizontalAlignment="Right">
+            <Button Content="Cancel"
+                    Click="CancelButton_OnClick"></Button>
+            <Button Content="Enter manually"
+                    Click="ManualButton_OnClick"
+                    Command="{Binding ManualCommand}"
+                    Margin="12,0,0,0"></Button>
+            <Button Content="Apply"
+                    Click="ApplyButton_OnClick"
+                    Command="{Binding ApplyCommand}"
+                    Margin="12,0,0,0"></Button>
+            
+        </StackPanel>
     </StackPanel>
 
-</Window>
+</Controls:MetroWindow>

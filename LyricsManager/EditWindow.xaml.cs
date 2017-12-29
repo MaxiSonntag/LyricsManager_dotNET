@@ -19,34 +19,22 @@ namespace LyricsManager
     /// <summary>
     /// Interaktionslogik für Window1.xaml
     /// </summary>
-    public partial class SearchWindow : MetroWindow
+    public partial class EditWindow : MetroWindow
     {
-        public SearchWindow()
+        public EditWindow()
         {
             InitializeComponent();
         }
 
-        private void AcceptButton_OnClick(object sender, RoutedEventArgs e)
+        private void SaveButton_OnClick(object sender, RoutedEventArgs e)
         {
-            var context = DataContext as SearchWindowViewModel;
-            context.SearchCommand.Execute(null);
+            var context = DataContext as EditWindowViewModel;
+            context.SaveCommand.Execute(null);
         }
 
         private void CancelButton_OnClick(object sender, RoutedEventArgs e)
         {
             this.Close();
-        }
-
-        private void ApplyButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            var context = DataContext as SearchWindowViewModel;
-            context.ApplyCommand.Execute(null);
-        }
-
-        private void ManualButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            var context = DataContext as SearchWindowViewModel;
-            context.ManualCommand.Execute(null);
         }
     }
 }

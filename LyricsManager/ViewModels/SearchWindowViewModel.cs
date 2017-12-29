@@ -12,12 +12,18 @@ namespace LyricsManager.ViewModels
 {
     class SearchWindowViewModel : ViewModelBase
     {
+        public event EventHandler OnCloseRequest;
+
         private List<SongViewModel> _resultList;
         private ObservableCollection<SongViewModel> _searchResults;
         private SongViewModel _selectedSong;
 
         public string EnteredArtist { get; set; }
         public string EnteredSong { get; set; }
+
+        private Song downloadedSong;
+        private string selectedLyricChecksum;
+        private int selectedLyricId;
 
         public ObservableCollection<SongViewModel> SearchResults
         {
@@ -31,30 +37,60 @@ namespace LyricsManager.ViewModels
             set => Set(ref _selectedSong, value);
         }
 
-        public DelegateCommand AcceptCommand { get; set; }
-        public DelegateCommand CancelCommand { get; set; }
+        public DelegateCommand SearchCommand { get; set; }
+        public DelegateCommand ApplyCommand { get; set; }
+        public DelegateCommand ManualCommand { get; set; }
 
         public SearchWindowViewModel()
         {
-            AcceptCommand = new DelegateCommand(AcceptCommandExecute);
-            CancelCommand = new DelegateCommand(CancelCommandExecute);
+            SearchCommand = new DelegateCommand(SearchCommandExecute);
+            ApplyCommand = new DelegateCommand(ApplyCommandExecute);
+            ManualCommand = new DelegateCommand(ManualCommandExecute);
             _searchResults = new ObservableCollection<SongViewModel>();
             _resultList = new List<SongViewModel>();
+            downloadedSong = new Song();
+            selectedLyricChecksum = "";
+            selectedLyricId = 0;
+            
         }
 
-        private void AcceptCommandExecute(object obj)
+        private void SearchCommandExecute(object obj)
         {
-            Console.WriteLine("+-+-+-+-+-+-+-+- AcceptCalled");
             if (SearchResults.Count != 0)
             {
                 SearchResults = new ObservableCollection<SongViewModel>();
+                _resultList = new List<SongViewModel>();
             }
             Task.Run(SearchSongsAsync);
         }
+        
 
-        private void CancelCommandExecute(object obj)
+        private void ApplyCommandExecute(object obj)
         {
-            Console.WriteLine("+-+-+-+-+-+-+-+- CancelCalled");
+            selectedLyricId = SelectedSearchViewModel.LyricId;
+            selectedLyricChecksum = SelectedSearchViewModel.LyricChecksum;
+            Task.Run(DownloadSongAsync).Wait();
+            Task.Run(SaveDownloadedSong).Wait();
+            OnCloseRequest(this, EventArgs.Empty);
+        }
+        
+
+        private void ManualCommandExecute(object obj)
+        {
+            var resultSong = new Song();
+
+            if (EnteredArtist != "")
+            {
+                resultSong.LyricArtist = EnteredArtist;
+            }
+            if (EnteredSong != "")
+            {
+                resultSong.LyricSong = EnteredSong;
+            }
+
+            downloadedSong = resultSong;
+            Task.Run(SaveDownloadedSong).Wait();
+            OnCloseRequest(this, EventArgs.Empty);
         }
 
         private async Task SearchSongsAsync()
@@ -63,5 +99,20 @@ namespace LyricsManager.ViewModels
             list.ForEach(s => _resultList.Add(new SongViewModel(s)));
             SearchResults = new ObservableCollection<SongViewModel>(_resultList);
         }
+
+        private async Task DownloadSongAsync()
+        {
+            var song = await DownloadService.DownloadSongByIdAsync(selectedLyricId, selectedLyricChecksum);
+            downloadedSong = song;
+            
+        }
+
+        private async Task SaveDownloadedSong()
+        {
+            var savedSongs = await PersistencyService.LoadLyricsAsync();
+            savedSongs.Add(downloadedSong);
+            await PersistencyService.SaveLyricsAsync(savedSongs);
+        }
+        
     }
 }
