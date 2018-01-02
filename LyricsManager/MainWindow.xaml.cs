@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using LyricsManager.ViewModels;
 using MahApps.Metro.Controls;
 
@@ -37,5 +38,6 @@ namespace LyricsManager
             var context = DataContext as MainWindowViewModel;
             context.EditCommand.Execute(null);
         }
+        
     }
 }

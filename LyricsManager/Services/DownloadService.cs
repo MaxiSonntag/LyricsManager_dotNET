@@ -12,14 +12,14 @@ namespace LyricsManager.Services
 {
     class DownloadService
     {
-        private static string downloadLyricByNameBaseUrl = "http://api.chartlyrics.com/apiv1.asmx/SearchLyricDirect?";
-        private static string searchBaseUrl = "http://api.chartlyrics.com/apiv1.asmx/SearchLyric?";
-        private static string downloadLyricByIdBaseUrl = "http://api.chartlyrics.com/apiv1.asmx/GetLyric?";
+        private static string _downloadLyricByNameBaseUrl = "http://api.chartlyrics.com/apiv1.asmx/SearchLyricDirect?";
+        private static string _searchBaseUrl = "http://api.chartlyrics.com/apiv1.asmx/SearchLyric?";
+        private static string _downloadLyricByIdBaseUrl = "http://api.chartlyrics.com/apiv1.asmx/GetLyric?";
 
         public static async Task<Song> DownloadSongAsync(string artist, string name)
         {
             await Task.Delay(0);
-            var fullUrl = downloadLyricByNameBaseUrl + "artist=" + artist + "&song=" + name;
+            var fullUrl = _downloadLyricByNameBaseUrl + "artist=" + artist + "&song=" + name;
 
             try
             {
@@ -62,7 +62,7 @@ namespace LyricsManager.Services
         public static async Task<List<Song>> DownloadSearchResultsAsync(string artist, string songName)
         {
             await Task.Delay(0);
-            var searchUrl = searchBaseUrl + "artist=" + artist + "&song=" + songName;
+            var searchUrl = _searchBaseUrl + "artist=" + artist + "&song=" + songName;
             Console.WriteLine(searchUrl);
             var searchResults = new List<Song>();
             try
@@ -115,7 +115,7 @@ namespace LyricsManager.Services
         public static async Task<Song> DownloadSongByIdAsync(int id, string checksum)
         {
             await Task.Delay(0);
-            var fullUrl = downloadLyricByIdBaseUrl + "lyricId=" + id + "&lyricCheckSum=" + checksum;
+            var fullUrl = _downloadLyricByIdBaseUrl + "lyricId=" + id + "&lyricCheckSum=" + checksum;
             Console.WriteLine("*#*#*#*#*#* URL: "+fullUrl);
             try
             {

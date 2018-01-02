@@ -12,7 +12,7 @@ namespace LyricsManager.ViewModels
     class EditWindowViewModel : ViewModelBase
     {
         public event EventHandler OnCloseRequest;
-        public int index;
+        public int Index;
 
         public DelegateCommand SaveCommand { get; set; }
 
@@ -43,9 +43,9 @@ namespace LyricsManager.ViewModels
                 LyricUrl = _song.LyricUrl,
                 Lyric = _song.Lyric
             };
-            allSongs[index] = song;
+            allSongs[Index] = song;
             await PersistencyService.SaveLyricsAsync(allSongs);
-            OnCloseRequest(this, EventArgs.Empty);
+            OnCloseRequest?.Invoke(this, EventArgs.Empty);
         }
 
     }

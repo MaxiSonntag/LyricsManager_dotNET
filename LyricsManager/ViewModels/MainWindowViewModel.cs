@@ -17,6 +17,8 @@ namespace LyricsManager.ViewModels
         private List<SongViewModel> _allSongs;
         private ObservableCollection<SongViewModel> _songs;
         private SongViewModel _selectedSong;
+        private string _filterText;
+        
 
         public ObservableCollection<SongViewModel> Songs
         {
@@ -27,7 +29,21 @@ namespace LyricsManager.ViewModels
         public SongViewModel SelectedSong
         {
             get => _selectedSong;
-            set => Set(ref _selectedSong, value);
+            set
+            {
+                Set(ref _selectedSong, value);
+                OnPropertyChanged(nameof(IsSelectionValid));
+            }
+        }
+
+        public string FilterText
+        {
+            get => _filterText;
+            set
+            {
+                Set(ref _filterText, value);
+                Filter();
+            }
         }
 
         public DelegateCommand DeleteCommand { get; set; }
@@ -35,23 +51,23 @@ namespace LyricsManager.ViewModels
         public DelegateCommand SaveCommand { get; set; }
         public DelegateCommand EditCommand { get; set; }
 
+        public bool IsSelectionValid => SelectedSong != null;
+
         public MainWindowViewModel()
         {
-            Task.Run(LoadDataAsync);
+            Task.Run(LoadDataAsync).Wait();
             DeleteCommand = new DelegateCommand(DeleteCommandExecute);
             NewCommand = new DelegateCommand(NewCommandExecute);
             SaveCommand = new DelegateCommand(SaveCommandExecute);
             EditCommand = new DelegateCommand(EditCommandExecute);
         }
 
-        
 
         private async Task LoadDataAsync()
         {
             
             _allSongs = new List<SongViewModel>();
             var songs = await PersistencyService.LoadLyricsAsync();
-
             songs.ToList().ForEach(s => _allSongs.Add(new SongViewModel(s)));
             Songs = new ObservableCollection<SongViewModel>(_allSongs);
             if (Songs.Count > 0)
@@ -60,26 +76,6 @@ namespace LyricsManager.ViewModels
             }
                 
         }
-
-        /*private async Task SaveDataAsync()
-        {
-            List<Song> list = new List<Song>();
-            foreach (var song in _allSongs)
-            {
-                Song s = new Song
-                {
-                    LyricSong = song.LyricSong,
-                    LyricArtist = song.LyricArtist,
-                    LyricChecksum = song.LyricChecksum,
-                    LyricId = song.LyricId,
-                    LyricRank = song.LyricRank,
-                    LyricUrl = song.LyricUrl,
-                    Lyric = song.Lyric
-                };
-                list.Add(s);
-            }
-            await PersistencyService.SaveLyricsAsync(list);
-        }*/
 
         private async void SaveCommandExecute(object obj)
         {
@@ -105,30 +101,14 @@ namespace LyricsManager.ViewModels
             };
             vm.OnCloseRequest += (s, e) => HandleDialogWindowClose(searchWindow);
             searchWindow.ShowDialog();
-            /*var newSong = new SongViewModel(new Song
-            {
-                LyricSong = "",
-                LyricArtist = "",
-                LyricChecksum = "",
-                LyricId = 0,
-                LyricRank = 0,
-                LyricUrl = "",
-                Lyric = ""
-            });
-            //_songs & _allSongs nicht verknüpft -> Binding klappt nicht wie es soll
-            _songs.Add(newSong);
-            _allSongs.Add(newSong);
-            SelectedSong = newSong;*/
         }
 
         private void DeleteCommandExecute(object obj)
         {
             Console.WriteLine("+-+-+-+-+--+-+-+-+-+-+");
             if (SelectedSong == null) return;
-
-            //_songs & _allSongs nicht verknüpft -> Binding klappt nicht wie es soll
+            
             _allSongs.Remove(SelectedSong);
-            _songs.Remove(SelectedSong);
             Songs.Remove(SelectedSong);
         }
 
@@ -141,9 +121,17 @@ namespace LyricsManager.ViewModels
             };
             vm.OnCloseRequest += (s, e) => HandleDialogWindowClose(editWindow);
             int idx = _allSongs.IndexOf(SelectedSong);
-            vm.index = idx;
-            //vm.Song = SelectedSong;
+            vm.Index = idx;
             editWindow.ShowDialog();
+        }
+
+        private void Filter()
+        {
+            Songs = string.IsNullOrWhiteSpace(FilterText)
+                ? new ObservableCollection<SongViewModel>(_allSongs)
+                : new ObservableCollection<SongViewModel>(_allSongs.Where(s => s.LyricSong?.IndexOf(FilterText, StringComparison.CurrentCultureIgnoreCase) >= 0
+                                                                                     || s.LyricArtist?.IndexOf(FilterText, StringComparison.CurrentCultureIgnoreCase) >=
+                                                                                     0));
         }
 
         private void HandleDialogWindowClose(Window window)

@@ -6,21 +6,50 @@
         xmlns:local="clr-namespace:LyricsManager"
         xmlns:viewModels="clr-namespace:LyricsManager.ViewModels"
         mc:Ignorable="d"
-        Title="Search Lyrics" Height="620" Width="500"
+        Title="Search Lyrics" Height="640" Width="500"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro">
     <Controls:MetroWindow.DataContext>
         <viewModels:SearchWindowViewModel/>
     </Controls:MetroWindow.DataContext>
-    
+
+    <Window.Resources>
+        <!--  Template für die Anzeige des Fehlers als roter Text unter dem jeweiligen Control  -->
+        <ControlTemplate x:Key="ErrorTemplate">
+            <StackPanel>
+                <!--  Placeholder for the TextBox itself  -->
+                <AdornedElementPlaceholder x:Name="textBox" />
+                <ItemsControl ItemsSource="{Binding}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
+                            <TextBlock Foreground="Red" Text="{Binding ErrorContent}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </ControlTemplate>
+
+        <!--  ErrorTemplate bei allen TextBoxes setzen  -->
+        <Style TargetType="TextBox">
+            <Setter Property="Padding" Value="4" />
+            <Setter Property="Validation.ErrorTemplate" Value="{StaticResource ErrorTemplate}" />
+        </Style>
+    </Window.Resources>
+
     <StackPanel Margin="12">
         <Label>Artist</Label>
-        <TextBox Text="{Binding EnteredArtist, Mode=TwoWay}"></TextBox>
+        <TextBox 
+            Text="{Binding EnteredArtist, Mode=TwoWay, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"
+            Margin="0,0,0,12"></TextBox>
         <Label>Song</Label>
-        <TextBox Text="{Binding EnteredSong, Mode=TwoWay}"></TextBox>
+        <TextBox 
+            Text="{Binding EnteredSong, Mode=TwoWay, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"
+            Margin="0,0,0,12"></TextBox>
         <StackPanel Orientation="Horizontal"
                     Margin="0,12,0,12"
                     HorizontalAlignment="Right">
             <Button Content="Search"
+                    IsEnabled="{Binding IsSearchEnabled}"
                     Click="AcceptButton_OnClick"
                     Command="{Binding SearchCommand}"></Button>
             
@@ -31,10 +60,11 @@
             MinWidth="240"
             MinHeight="350"
             MaxHeight="350"
+            Margin="0,0,0,12"
             BorderThickness="0,0,0,0"
             DockPanel.Dock="Left"
             Focusable="True"
-            ItemsSource="{Binding SearchResults}"
+            ItemsSource="{Binding SearchResults, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"
             SelectedItem="{Binding SelectedSearchViewModel, Mode=TwoWay}">
             <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
@@ -66,6 +96,7 @@
                     Command="{Binding ManualCommand}"
                     Margin="12,0,0,0"></Button>
             <Button Content="Apply"
+                    IsEnabled="{Binding IsApplyEnabled}"
                     Click="ApplyButton_OnClick"
                     Command="{Binding ApplyCommand}"
                     Margin="12,0,0,0"></Button>

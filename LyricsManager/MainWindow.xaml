@@ -14,10 +14,34 @@
     
     
     <DockPanel Margin="12">
-        <TextBlock
-            FontSize="14"
-            DockPanel.Dock="Top"
-            Text ="Songs"></TextBlock>
+       <Border DockPanel.Dock="Top"
+               BorderBrush="Red"
+               Margin="0,0,0,7">
+            <StackPanel>
+                <Grid>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                        <Label
+                            Content="_Songs"
+                            FontSize="24"
+                            Target="{Binding ElementName=ListBoxSongs}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <TextBox 
+                            Controls:TextBoxHelper.Watermark="Search..."
+                            Controls:TextBoxHelper.ClearTextButton="True"
+                            Controls:TextBoxHelper.UseFloatingWatermark="False"
+                            Name="TextBoxSearch"
+                            MaxWidth="250"
+                            VerticalContentAlignment="Center"
+                            VerticalAlignment="Center"
+                            Padding="4,4,4,4"
+                            FontSize="14"
+                            Text="{Binding FilterText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+        </Border>
+        
 
         <ListBox
             Name="ListBoxSongs"
@@ -39,7 +63,8 @@
                         <StackPanel Margin="4,4,4,4">
                             <TextBlock FontSize="18">
                                 <Run Text="{Binding LyricSong}" />
-                                <Run Text=" - "></Run>
+                            </TextBlock>
+                            <TextBlock FontSize="12">
                                 <Run Text="{Binding LyricArtist}" />
                             </TextBlock>
                         </StackPanel>
@@ -57,6 +82,7 @@
             <Button
                 Margin="12,0,0,0"
                 Click="DeleteButton_OnClick"
+                IsEnabled="{Binding IsSelectionValid}"
                 Command="{Binding DeleteCommand}"
                 Content="_Delete" />
             <Button
@@ -70,7 +96,8 @@
 
         <StackPanel
                 MinWidth="400"
-                Margin="12,0,0,0">
+                Margin="12,0,0,0"
+            DockPanel.Dock="Right">
             <Grid>
                 <StackPanel Orientation="Horizontal" 
                             HorizontalAlignment="Left">
@@ -80,14 +107,11 @@
                 <StackPanel Orientation="Horizontal" 
                             HorizontalAlignment="Right">
                     <Button Command="{Binding EditCommand}"
+                            IsEnabled="{Binding IsSelectionValid}"
                             Click="EditButton_OnClick">Edit</Button>
                 </StackPanel>
             </Grid>
             
-           <StackPanel Orientation="Horizontal">
-               
-               
-            </StackPanel>
             <TextBlock
                     Name="TextBoxArtist"
                     Margin="0,0,0,12"
@@ -112,17 +136,6 @@
                     Margin="0,0,0,12"
                     Text="{Binding SelectedSong.Lyric}"></TextBlock>
             </ScrollViewer>
-            
-            
-            <!--TextBox !!!!!! FÜR EDIT FENSTER !!!!!!
-                ScrollViewer.VerticalScrollBarVisibility ="Visible"
-                ScrollViewer.HorizontalScrollBarVisibility ="Auto"
-                Name="TextBoxLyric"
-                Margin="{StaticResource MarginBottom12}"
-                FontSize="{StaticResource FontSizeLarge}"
-                Text="{Binding SelectedSong.Lyric}"
-                MaxHeight="350"
-                AcceptsReturn="True"/-->
 
 
         </StackPanel>
