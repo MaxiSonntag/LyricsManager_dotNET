@@ -21,7 +21,7 @@ namespace LyricsManager.Services
             {
                 using (var fileStream = File.Open(FileName, FileMode.Open))
                 {
-                    //
+                    
                     var serializer = new XmlSerializer(typeof(List<Song>));
                     var obj = serializer.Deserialize(fileStream);
                     var songs = obj as List<Song>;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace LyricsManager.Models
 {
@@ -16,6 +17,7 @@ namespace LyricsManager.Models
         public string LyricSong { get; set; }
         public int LyricRank { get; set; }
         public string Lyric { get; set; }
+        public string ImageUri { get; set; }
         
 
         public override string ToString()

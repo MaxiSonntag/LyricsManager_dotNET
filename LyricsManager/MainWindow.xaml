@@ -12,10 +12,16 @@
         <viewModels:MainWindowViewModel />
     </Controls:MetroWindow.DataContext>
     
+    <!--Window.Resources>
+        <Style TargetType="Window">
+            <Setter Property="FontFamily"
+                    Value=></Setter>
+        </Style>
+    </>-->
+    
     
     <DockPanel Margin="12">
        <Border DockPanel.Dock="Top"
-               BorderBrush="Red"
                Margin="0,0,0,7">
             <StackPanel>
                 <Grid>
@@ -45,8 +51,8 @@
 
         <ListBox
             Name="ListBoxSongs"
-            MinWidth="240"
-            MaxWidth="280"
+            MinWidth="150"
+            MaxWidth="230"
             BorderThickness="0,0,0,0"
             DockPanel.Dock="Left"
             Focusable="True"
@@ -55,19 +61,36 @@
             <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <Setter Property="MaxWidth"
+                            Value="230"></Setter>
                 </Style>
             </ListBox.ItemContainerStyle>
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="viewModels:SongViewModel">
                     <DockPanel>
-                        <StackPanel Margin="4,4,4,4">
-                            <TextBlock FontSize="18">
-                                <Run Text="{Binding LyricSong}" />
-                            </TextBlock>
-                            <TextBlock FontSize="12">
-                                <Run Text="{Binding LyricArtist}" />
-                            </TextBlock>
-                        </StackPanel>
+                        <Grid MinWidth="200">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                <Image Width="36"
+                                       Height="36"
+                                       Margin="0,0,4,0"
+                                       Source="{Binding ImageUri}"></Image>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                <StackPanel Margin="4,4,4,4" MaxWidth="150">
+                                    <TextBlock FontSize="18"
+                                               TextAlignment="Right"
+                                               TextTrimming="CharacterEllipsis">
+                                        <Run Text="{Binding LyricSong}" />
+                                    </TextBlock>
+                                    <TextBlock FontSize="12"
+                                               TextAlignment="Right"
+                                               TextTrimming="CharacterEllipsis">
+                                        <Run Text="{Binding LyricArtist}" />
+                                    </TextBlock>
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+                        
                     </DockPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
@@ -90,6 +113,10 @@
                 Click="SaveButton_OnClick"
                 Command="{Binding SaveCommand}"
                 Content="_Save" />
+            <Button Command="{Binding EditCommand}"
+                    IsEnabled="{Binding IsSelectionValid}"
+                    Click="EditButton_OnClick"
+                    Margin="12,0,0,0">Edit</Button>
 
         </StackPanel>
         
@@ -99,33 +126,33 @@
                 Margin="12,0,0,0"
             DockPanel.Dock="Right">
             <Grid>
-                <StackPanel Orientation="Horizontal" 
-                            HorizontalAlignment="Left">
-                    <Label FontSize="12" 
-                           Target="{Binding ElementName=TextBoxArtist}">_Artist</Label>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" 
-                            HorizontalAlignment="Right">
-                    <Button Command="{Binding EditCommand}"
-                            IsEnabled="{Binding IsSelectionValid}"
-                            Click="EditButton_OnClick">Edit</Button>
+                <StackPanel Orientation="Horizontal">
+                    <Image MaxWidth="125"
+                           MaxHeight="125"
+                           MinWidth="40"
+                           MinHeight="40"
+                           Margin="4,0,12,4"
+                           Source="{Binding SelectedSong.ImageUri}"></Image>
+                    <StackPanel>
+                        
+                        
+                        <TextBlock
+                            Name="TextBoxSong"
+                            FontSize="22"
+                            Text="{Binding Path=SelectedSong.LyricSong, Mode=TwoWay, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <TextBlock 
+                            Name="TextBoxArtist"
+                            FontSize="15"
+                            Text="{Binding Path=SelectedSong.LyricArtist, Mode=TwoWay, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
+
+
+                    </StackPanel>
                 </StackPanel>
             </Grid>
-            
-            <TextBlock
-                    Name="TextBoxArtist"
-                    Margin="0,0,0,12"
-                    FontSize="18"
-                    Text="{Binding Path=SelectedSong.LyricArtist, Mode=TwoWay, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
 
-            <Label FontSize="12" Target="{Binding ElementName=TextBoxSong}">_Song</Label>
-            <TextBlock
-                    Name="TextBoxSong"
-                    Margin="0,0,0,12"
-                    FontSize="18"
-                    Text="{Binding Path=SelectedSong.LyricSong, Mode=TwoWay, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
+            <Label FontSize="13" Target="{Binding ElementName=TextBoxLyric}">_Lyrics</Label>
 
-            <Label FontSize="12" Target="{Binding ElementName=TextBoxLyric}">_Lyrics</Label>
             <ScrollViewer
                 VerticalScrollBarVisibility="Auto"
                 HorizontalScrollBarVisibility="Auto"

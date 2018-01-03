@@ -1,26 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LyricsManager.Models;
 using LyricsManager.MVVM;
 using LyricsManager.Services;
 
 namespace LyricsManager.ViewModels
 {
-    class EditWindowViewModel : ViewModelBase
+    internal class EditWindowViewModel : ViewModelBase
     {
-        public event EventHandler OnCloseRequest;
-        public int Index;
-
-        public DelegateCommand SaveCommand { get; set; }
-
         private SongViewModel _song;
-        public SongViewModel Song {
-            get => _song;
-            set => Set(ref _song, value);
-        }
+        public int Index;
 
         public EditWindowViewModel(SongViewModel songViewModel)
         {
@@ -28,25 +16,37 @@ namespace LyricsManager.ViewModels
             _song = songViewModel;
         }
 
-        public EditWindowViewModel(){ }
+        public EditWindowViewModel()
+        {
+        }
+
+        public DelegateCommand SaveCommand { get; set; }
+
+        public SongViewModel Song
+        {
+            get => _song;
+            set => Set(ref _song, value);
+        }
+
+        public event EventHandler OnCloseRequest;
 
         private async void SaveCommandExecute(object obj)
         {
             var allSongs = await PersistencyService.LoadLyricsAsync();
-            var song = new Song()
+            var song = new Song
             {
-                LyricId = _song.LyricId,
-                LyricArtist = _song.LyricArtist,
-                LyricSong = _song.LyricSong,
-                LyricChecksum = _song.LyricChecksum,
-                LyricRank = _song.LyricRank,
-                LyricUrl = _song.LyricUrl,
-                Lyric = _song.Lyric
+                LyricId = Song.LyricId,
+                LyricArtist = Song.LyricArtist,
+                LyricSong = Song.LyricSong,
+                LyricChecksum = Song.LyricChecksum,
+                LyricRank = Song.LyricRank,
+                LyricUrl = Song.LyricUrl,
+                Lyric = Song.Lyric,
+                ImageUri = Song.ImageUri
             };
             allSongs[Index] = song;
             await PersistencyService.SaveLyricsAsync(allSongs);
             OnCloseRequest?.Invoke(this, EventArgs.Empty);
         }
-
     }
 }

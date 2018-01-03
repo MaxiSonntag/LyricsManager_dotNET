@@ -87,7 +87,8 @@ namespace LyricsManager.ViewModels
                 LyricRank = vm.LyricRank,
                 LyricId = vm.LyricId,
                 LyricUrl = vm.LyricUrl,
-                Lyric = vm.Lyric
+                Lyric = vm.Lyric,
+                ImageUri = vm.ImageUri
             }));
         }
 

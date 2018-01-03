@@ -21,6 +21,7 @@ namespace LyricsManager.ViewModels
             LyricSong = song.LyricSong;
             LyricRank = song.LyricRank;
             Lyric = song.Lyric;
+            ImageUri = song.ImageUri;
         }
 
         public string Lyric { get; set; }
@@ -31,5 +32,6 @@ namespace LyricsManager.ViewModels
         public string LyricArtist { get; set; }
         public string LyricSong { get; set; }
         public int LyricRank { get; set; }
+        public string ImageUri { get; set; }
     }
 }
