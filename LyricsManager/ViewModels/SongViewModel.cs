@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LyricsManager.Models;
+﻿using LyricsManager.Models;
 
 namespace LyricsManager.ViewModels
 {
@@ -13,7 +8,6 @@ namespace LyricsManager.ViewModels
 
         public SongViewModel(Song song)
         {
-            TrackId = song.TrackId;
             LyricChecksum = song.LyricChecksum;
             LyricId = song.LyricId;
             LyricUrl = song.LyricUrl;
@@ -25,13 +19,12 @@ namespace LyricsManager.ViewModels
         }
 
         public string Lyric { get; set; }
-        public string TrackId { get; set; }
-        public string LyricChecksum { get; set; }
+        public string LyricChecksum { get; }
         public int LyricId { get; set; }
-        public string LyricUrl { get; set; }
+        public string LyricUrl { get; }
         public string LyricArtist { get; set; }
         public string LyricSong { get; set; }
-        public int LyricRank { get; set; }
+        public int LyricRank { get; }
         public string ImageUri { get; set; }
     }
 }

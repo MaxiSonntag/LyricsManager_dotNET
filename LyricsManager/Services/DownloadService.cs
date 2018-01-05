@@ -1,14 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Security.AccessControl;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 using System.Xml;
-using System.Xml.Serialization;
 using LyricsManager.Models;
 
 namespace LyricsManager.Services
@@ -16,9 +11,7 @@ namespace LyricsManager.Services
     class DownloadService
     {
         //private static string _downloadLyricByNameBaseUrl = "http://api.chartlyrics.com/apiv1.asmx/SearchLyricDirect?";
-        private const string SearchBaseUrl = "http://api.chartlyrics.com/apiv1.asmx/SearchLyric?";
 
-        private const string DownloadLyricByIdBaseUrl = "http://api.chartlyrics.com/apiv1.asmx/GetLyric?";
 
         /*public static async Task<Song> DownloadSongAsync(string artist, string name)
         {
@@ -66,7 +59,7 @@ namespace LyricsManager.Services
         public static async Task<List<Song>> DownloadSearchResultsAsync(string artist, string songName)
         {
             await Task.Delay(0);
-            var searchUrl = SearchBaseUrl + "artist=" + artist + "&song=" + songName;
+            var searchUrl = Constants.SearchBaseUrl + "artist=" + artist + "&song=" + songName;
             Console.WriteLine(searchUrl);
             var searchResults = new List<Song>();
             try
@@ -111,7 +104,7 @@ namespace LyricsManager.Services
             }
             catch (Exception e)
             {
-                Console.WriteLine("exception: " + e);
+                Console.WriteLine(e);
                 throw;
             }
         }
@@ -119,7 +112,7 @@ namespace LyricsManager.Services
         public static async Task<Song> DownloadSongByIdAsync(int id, string checksum)
         {
             await Task.Delay(0);
-            var fullUrl = DownloadLyricByIdBaseUrl + "lyricId=" + id + "&lyricCheckSum=" + checksum;
+            var fullUrl = Constants.DownloadLyricByIdBaseUrl + "lyricId=" + id + "&lyricCheckSum=" + checksum;
             Console.WriteLine("*#*#*#*#*#* URL: "+fullUrl);
             try
             {
@@ -186,6 +179,33 @@ namespace LyricsManager.Services
             }
             song.ImageUri = path + "/" + song.LyricId + "_image.jpg";
             return song;
+        }
+
+        public static async Task<string> DownloadSpotifySearchResults(string query, string accessToken)
+        {
+            var client = new WebClient();
+            client.Headers.Add("Host", "api.spotify.com");
+            client.Headers.Add("Accept", "application/json");
+            client.Headers.Add("Content-Type", "application/json");
+            client.Headers.Add("Authorization", "Bearer "+accessToken);
+            client.Headers.Add("User-Agent", "Spotify API Console v0.1");
+            var escapeUri = Uri.EscapeUriString("https://api.spotify.com/v1/search?q=" + query + "&type=track");
+            
+        
+            
+            Console.WriteLine("URL: " + escapeUri);
+            string response = "";
+            try
+            {
+                response = client.DownloadString(escapeUri);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
+            return response;
         }
 
     }

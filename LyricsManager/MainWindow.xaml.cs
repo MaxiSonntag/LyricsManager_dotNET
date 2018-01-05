@@ -1,16 +1,18 @@
 ﻿using System;
-using System.IO;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
+using System.Windows.Navigation;
+using LyricsManager.Services;
 using LyricsManager.ViewModels;
-using MahApps.Metro.Controls;
 
 namespace LyricsManager
 {
     /// <summary>
     ///     Interaktionslogik für MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : MetroWindow
+    public partial class MainWindow
     {
         public MainWindow()
         {
@@ -20,27 +22,62 @@ namespace LyricsManager
         private void NewButton_OnClick(object sender, RoutedEventArgs e)
         {
             var context = DataContext as MainWindowViewModel;
-            context.NewCommand.Execute(null);
+            context?.NewCommand.Execute(null);
         }
 
         private void DeleteButton_OnClick(object sender, RoutedEventArgs e)
         {
             var context = DataContext as MainWindowViewModel;
-            context.DeleteCommand.Execute(null);
+            context?.DeleteCommand.Execute(null);
         }
 
         private void SaveButton_OnClick(object sender, RoutedEventArgs e)
         {
             var context = DataContext as MainWindowViewModel;
-            context.SaveCommand.Execute(null);
+            context?.SaveCommand.Execute(null);
         }
 
         private void EditButton_OnClick(object sender, RoutedEventArgs e)
         {
             var context = DataContext as MainWindowViewModel;
-            context.EditCommand.Execute(null);
+            context?.EditCommand.Execute(null);
         }
 
-        
+
+        private void Hyperlink_OnRequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            e.Handled = true;
+        }
+
+
+        private void MainWindow_OnClosing(object sender, CancelEventArgs e)
+        {
+            SaveButton_OnClick(null, null);
+        }
+
+        private void PlayButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            var context = DataContext as MainWindowViewModel;
+            context.SearchAndPlaySpotifyCommand.Execute(null);
+        }
+
+        private void ConnectLocalSpotify_OnClick(object sender, RoutedEventArgs e)
+        {
+            var context = DataContext as MainWindowViewModel;
+            context.ConnectLocalSpotifyCommand.Execute(null);
+        }
+
+        private void ConnectWebSpotify_OnClick(object sender, RoutedEventArgs e)
+        {
+            var context = DataContext as MainWindowViewModel;
+            context.ConnectWebSpotifyCommand.Execute(null);
+        }
+
+        private void StopButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            var context = DataContext as MainWindowViewModel;
+            context.PauseSpotifyCommand.Execute(null);
+        }
     }
 }

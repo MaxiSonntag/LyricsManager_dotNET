@@ -113,6 +113,7 @@ namespace LyricsManager.ViewModels
                 resultSong.LyricSong = _song;
             }
 
+            resultSong.ImageUri = "/Images/PlaceholderPicture.png";
             _downloadedSong = resultSong;
             Task.Run(SaveDownloadedSong).Wait();
             OnCloseRequest?.Invoke(this, EventArgs.Empty);
@@ -148,7 +149,7 @@ namespace LyricsManager.ViewModels
 
         private async Task SaveDownloadedSong()
         {
-            var savedSongs = await PersistencyService.LoadLyricsAsync();
+            List<Song> savedSongs = await PersistencyService.LoadLyricsAsync();
             savedSongs.Add(_downloadedSong);
             await PersistencyService.SaveLyricsAsync(savedSongs);
         }

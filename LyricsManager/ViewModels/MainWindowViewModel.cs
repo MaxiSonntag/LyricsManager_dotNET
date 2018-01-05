@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Documents;
 using LyricsManager.Models;
 using LyricsManager.MVVM;
 using LyricsManager.Services;
@@ -18,6 +16,8 @@ namespace LyricsManager.ViewModels
         private ObservableCollection<SongViewModel> _songs;
         private SongViewModel _selectedSong;
         private string _filterText;
+
+        public SpotifyViewModel SpotifyViewModel { get; }
         
 
         public ObservableCollection<SongViewModel> Songs
@@ -31,7 +31,10 @@ namespace LyricsManager.ViewModels
             get => _selectedSong;
             set
             {
-                Set(ref _selectedSong, value);
+                if (value != null)
+                {
+                    Set(ref _selectedSong, value);
+                }
                 OnPropertyChanged(nameof(IsSelectionValid));
             }
         }
@@ -50,8 +53,14 @@ namespace LyricsManager.ViewModels
         public DelegateCommand NewCommand { get; set; }
         public DelegateCommand SaveCommand { get; set; }
         public DelegateCommand EditCommand { get; set; }
+        public DelegateCommand ConnectLocalSpotifyCommand { get; set; }
+        public DelegateCommand ConnectWebSpotifyCommand { get; set; }
+        public DelegateCommand SearchAndPlaySpotifyCommand { get; set; }
+        public DelegateCommand PauseSpotifyCommand { get; set; }
 
         public bool IsSelectionValid => SelectedSong != null;
+
+        
 
         public MainWindowViewModel()
         {
@@ -60,7 +69,19 @@ namespace LyricsManager.ViewModels
             NewCommand = new DelegateCommand(NewCommandExecute);
             SaveCommand = new DelegateCommand(SaveCommandExecute);
             EditCommand = new DelegateCommand(EditCommandExecute);
+            ConnectWebSpotifyCommand = new DelegateCommand(ConnectWebSpotifyCommandExecute);
+            ConnectLocalSpotifyCommand = new DelegateCommand(ConnectLocalSpotifyCommandExecute);
+            SearchAndPlaySpotifyCommand = new DelegateCommand(SearchAndPlaySpotifyCommandExecute);
+            PauseSpotifyCommand = new DelegateCommand(PauseSpotifyCommandExecute);
+            SpotifyViewModel = new SpotifyViewModel();
+
+            if (Songs != null && Songs.Count > 0)
+            {
+                SelectedSong = Songs[0];
+            }
         }
+
+        
 
 
         private async Task LoadDataAsync()
@@ -70,10 +91,6 @@ namespace LyricsManager.ViewModels
             var songs = await PersistencyService.LoadLyricsAsync();
             songs.ToList().ForEach(s => _allSongs.Add(new SongViewModel(s)));
             Songs = new ObservableCollection<SongViewModel>(_allSongs);
-            if (Songs.Count > 0)
-            {
-                SelectedSong = Songs[0];
-            }
                 
         }
 
@@ -106,7 +123,6 @@ namespace LyricsManager.ViewModels
 
         private void DeleteCommandExecute(object obj)
         {
-            Console.WriteLine("+-+-+-+-+--+-+-+-+-+-+");
             if (SelectedSong == null) return;
             
             _allSongs.Remove(SelectedSong);
@@ -121,9 +137,39 @@ namespace LyricsManager.ViewModels
                 DataContext = vm
             };
             vm.OnCloseRequest += (s, e) => HandleDialogWindowClose(editWindow);
-            int idx = _allSongs.IndexOf(SelectedSong);
+            var idx = _allSongs.IndexOf(SelectedSong);
             vm.Index = idx;
             editWindow.ShowDialog();
+        }
+
+        private void SearchAndPlaySpotifyCommandExecute(object obj)
+        {
+            if (SpotifyViewModel.IsWebConnected)
+            {
+                SpotifyViewModel.SearchedArtist = SelectedSong.LyricArtist;
+                SpotifyViewModel.SearchedSong = SelectedSong.LyricSong;
+
+                SpotifyViewModel.SearchAndPlay();
+            }
+            
+        }
+
+        private void PauseSpotifyCommandExecute(object obj)
+        {
+            if (SpotifyViewModel.IsLocalConnected)
+            {
+                SpotifyViewModel.PauseLocalSpotify();
+            }
+        }
+
+        private void ConnectWebSpotifyCommandExecute(object obj)
+        {
+            SpotifyViewModel.ConnectWebApi();
+        }
+
+        private void ConnectLocalSpotifyCommandExecute(object obj)
+        {
+            SpotifyViewModel.ConnectLocalApi();
         }
 
         private void Filter()
@@ -137,8 +183,13 @@ namespace LyricsManager.ViewModels
 
         private void HandleDialogWindowClose(Window window)
         {
+            
             window.Close();
-            Task.Run(LoadDataAsync);
+            Task.Run(LoadDataAsync).Wait();
+            if (window.GetType() == typeof(SearchWindow))
+            {
+                SelectedSong = Songs[Songs.Count - 1];
+            }
         }
 
     }
