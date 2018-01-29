@@ -19,7 +19,7 @@ namespace LyricsManager
             InitializeComponent();
         }
 
-        private void NewButton_OnClick(object sender, RoutedEventArgs e)
+        /*private void NewButton_OnClick(object sender, RoutedEventArgs e)
         {
             var context = DataContext as MainWindowViewModel;
             context?.NewCommand.Execute(null);
@@ -41,7 +41,7 @@ namespace LyricsManager
         {
             var context = DataContext as MainWindowViewModel;
             context?.EditCommand.Execute(null);
-        }
+        }*/
 
 
         private void Hyperlink_OnRequestNavigate(object sender, RequestNavigateEventArgs e)
@@ -53,10 +53,11 @@ namespace LyricsManager
 
         private void MainWindow_OnClosing(object sender, CancelEventArgs e)
         {
-            SaveButton_OnClick(null, null);
+            var context = DataContext as MainWindowViewModel;
+            context?.SaveCommand.Execute(null);
         }
 
-        private void PlayButton_OnClick(object sender, RoutedEventArgs e)
+        /*private void PlayButton_OnClick(object sender, RoutedEventArgs e)
         {
             var context = DataContext as MainWindowViewModel;
             context.SearchAndPlaySpotifyCommand.Execute(null);
@@ -78,6 +79,6 @@ namespace LyricsManager
         {
             var context = DataContext as MainWindowViewModel;
             context.PauseSpotifyCommand.Execute(null);
-        }
+        }*/
     }
 }

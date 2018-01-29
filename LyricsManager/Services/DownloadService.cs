@@ -4,7 +4,10 @@ using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using System.Xml;
+using Google.Apis.Services;
+using Google.Apis.YouTube.v3;
 using LyricsManager.Models;
+using LyricsManager.ViewModels;
 
 namespace LyricsManager.Services
 {
@@ -208,5 +211,34 @@ namespace LyricsManager.Services
             return response;
         }
 
+        public static async Task<List<YoutubeSearchResultViewModel>> LoadYoutubeVideosAsync(string artist, string song)
+        {
+            var youtubeService = new YouTubeService(new BaseClientService.Initializer()
+            {
+                ApiKey = Constants.YouTubeApiKey,
+                ApplicationName = "LyricsManager"
+            });
+
+            var searchRequest = youtubeService.Search.List("snippet");
+            searchRequest.Q = artist + " " + song;
+            searchRequest.MaxResults = 30;
+            searchRequest.Type = "video";
+
+            var response = await searchRequest.ExecuteAsync();
+
+            var resultList = new List<YoutubeSearchResultViewModel>();
+            foreach (var searchResult in response.Items)
+            {
+                var id = searchResult.Id.VideoId;
+                var imageUrl = searchResult.Snippet.Thumbnails.Medium.Url;
+                var title = searchResult.Snippet.Title;
+                var desc = searchResult.Snippet.Description;
+                
+                resultList.Add(new YoutubeSearchResultViewModel(imageUrl, id, title, desc));
+            }
+
+            return resultList;
+
+        }
     }
 }

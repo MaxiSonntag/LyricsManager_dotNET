@@ -57,6 +57,7 @@ namespace LyricsManager.ViewModels
         public DelegateCommand ConnectWebSpotifyCommand { get; set; }
         public DelegateCommand SearchAndPlaySpotifyCommand { get; set; }
         public DelegateCommand PauseSpotifyCommand { get; set; }
+        public DelegateCommand ShowYoutubeCommand { get; set; }
 
         public bool IsSelectionValid => SelectedSong != null;
 
@@ -73,6 +74,7 @@ namespace LyricsManager.ViewModels
             ConnectLocalSpotifyCommand = new DelegateCommand(ConnectLocalSpotifyCommandExecute);
             SearchAndPlaySpotifyCommand = new DelegateCommand(SearchAndPlaySpotifyCommandExecute);
             PauseSpotifyCommand = new DelegateCommand(PauseSpotifyCommandExecute);
+            ShowYoutubeCommand = new DelegateCommand(ShowYoutubeCommandExecute);
             SpotifyViewModel = new SpotifyViewModel();
 
             if (Songs != null && Songs.Count > 0)
@@ -170,6 +172,16 @@ namespace LyricsManager.ViewModels
         private void ConnectLocalSpotifyCommandExecute(object obj)
         {
             SpotifyViewModel.ConnectLocalApi();
+        }
+
+        private void ShowYoutubeCommandExecute(object obj)
+        {
+            var vm = new YoutubeWindowViewModel(SelectedSong.LyricArtist, SelectedSong.LyricSong);
+            var youtubeWindow = new YoutubeWindow
+            {
+                DataContext = vm
+            };
+            youtubeWindow.ShowDialog();
         }
 
         private void Filter()

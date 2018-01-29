@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Windows.Input;
 
 namespace LyricsManager.MVVM
 {
-    class DelegateCommand
+    public class DelegateCommand : ICommand
     {
         private readonly Predicate<object> _canExecute;
         private readonly Action<object> _execute;

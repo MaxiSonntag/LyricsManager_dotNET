@@ -48,7 +48,6 @@
             HorizontalAlignment="Right"
             Orientation="Horizontal">
             <Button
-                Click="AcceptButton_OnClick"
                 Command="{Binding SearchCommand}"
                 Content="Search"
                 IsEnabled="{Binding IsSearchEnabled}" />
@@ -93,12 +92,10 @@
             <Button Click="CancelButton_OnClick" Content="Cancel" />
             <Button
                 Margin="12,0,0,0"
-                Click="ManualButton_OnClick"
                 Command="{Binding ManualCommand}"
                 Content="Enter manually" />
             <Button
                 Margin="12,0,0,0"
-                Click="ApplyButton_OnClick"
                 Command="{Binding ApplyCommand}"
                 Content="Apply"
                 IsEnabled="{Binding IsApplyEnabled}" />

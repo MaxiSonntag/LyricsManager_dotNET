@@ -10,6 +10,7 @@
     Width="800"
     Height="650"
     mc:Ignorable="d">
+    
     <controls:MetroWindow.DataContext>
         <viewModels:EditWindowViewModel />
     </controls:MetroWindow.DataContext>

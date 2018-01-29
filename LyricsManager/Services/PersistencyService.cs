@@ -31,7 +31,7 @@ namespace LyricsManager.Services
             catch (Exception e)
             {
                 Console.Out.WriteLine($"Fehler beim Laden: {e.Message}");
-                Console.Out.WriteLine(e.StackTrace);
+                //Console.Out.WriteLine(e.StackTrace);
                 return new List<Song>();
             }
         }
