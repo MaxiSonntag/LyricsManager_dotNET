@@ -13,6 +13,10 @@ using SpotifyAPI.Web.Enums;
 
 namespace LyricsManager.Services
 {
+    /// <summary>
+    ///     Zugriffsklasse auf die Spotify-WebAPI.
+    ///     Umfasst Authentifizierung und Suche nach Songs.
+    /// </summary>
     class SpotifyWebApiService
     {
         private SpotifyWebAPI _spotifyWebApi;
@@ -26,6 +30,9 @@ namespace LyricsManager.Services
             SearchedSong = song;
         }
 
+        /// <summary>
+        ///     Leitet die Authentifizierung des Nutzers auf der Spotify-Authentifizierungsseite ein
+        /// </summary>
         public async void Authenticate()
         {
             WebAPIFactory webApiFactory = new WebAPIFactory(
@@ -42,13 +49,7 @@ namespace LyricsManager.Services
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
-            }
-
-            if (_spotifyWebApi == null)
-            {
-                return;
+                Console.WriteLine("Spotify could not connect: "+e.Message);
             }
             
 
@@ -72,6 +73,10 @@ namespace LyricsManager.Services
             return false;
         }
 
+        /// <summary>
+        ///     Sucht nach verfügbaren Liedern auf Spotify.
+        /// </summary>
+        /// <returns>URL eines abspielbaren Liedes, das den Suchkriterien entspricht</returns>
         public string SearchSong()
         {
             var query = SearchedArtist + " " + SearchedSong;
@@ -96,6 +101,11 @@ namespace LyricsManager.Services
             return trackUrl;
         }
 
+        /// <summary>
+        ///     Erstellt eine abspielbare URL eines Songs.
+        /// </summary>
+        /// <param name="json">Die JSON-Response der Suche</param>
+        /// <returns>Die abspielbare URL</returns>
         private string CreatePlayableUrlFromJson(string json)
         {
             var url = ExtractUrl(json);
@@ -111,6 +121,11 @@ namespace LyricsManager.Services
             return playableUrl;
         }
 
+        /// <summary>
+        ///     Extrahiert die URL eines Suchergebnisses aus JSON.
+        /// </summary>
+        /// <param name="jsonResponse">Die JSON-Response der Suche</param>
+        /// <returns>Eine (nicht abspielbare) URL</returns>
         private string ExtractUrl(string jsonResponse)
         {
             var parsed = JObject.Parse(jsonResponse);

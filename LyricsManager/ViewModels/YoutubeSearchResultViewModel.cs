@@ -8,13 +8,16 @@ using LyricsManager.MVVM;
 
 namespace LyricsManager.ViewModels
 {
-    class YoutubeSearchResultViewModel
+    /// <summary>
+    ///     View Model eines YouTube-Suchergebnisses
+    /// </summary>
+    internal class YoutubeSearchResultViewModel
     {
         public string ImageUrl { get; set; }
         private string VideoId { get; }
         public string Title { get; set; }
         public string Description { get; set; }
-        private string EmbedUrl { get; }
+        private string WatchUrl { get; }
         public DelegateCommand VideoPressedCommand { get; set; }
 
         public YoutubeSearchResultViewModel(YoutubeSearchResultViewModel model)
@@ -23,13 +26,17 @@ namespace LyricsManager.ViewModels
             VideoId = model.VideoId;
             Title = model.Title;
             Description = model.Description;
-            EmbedUrl = "https://www.youtube.com/watch?v=" + VideoId;
+            WatchUrl = "https://www.youtube.com/watch?v=" + VideoId;
             VideoPressedCommand = new DelegateCommand(VideoPressedCommandExecute);
         }
 
+        /// <summary>
+        ///     Öffnet die YouTube-Website des entsprechenden Liedes
+        /// </summary>
+        /// <param name="obj"></param>
         private void VideoPressedCommandExecute(object obj)
         {
-            Process.Start(new ProcessStartInfo(EmbedUrl));
+            Process.Start(new ProcessStartInfo(WatchUrl));
         }
 
         public YoutubeSearchResultViewModel(string url, string id, string title, string desc)
@@ -38,7 +45,7 @@ namespace LyricsManager.ViewModels
             VideoId = id;
             Title = title;
             Description = desc;
-            EmbedUrl = "https://www.youtube.com/watch=" + VideoId;
+            WatchUrl = "https://www.youtube.com/watch=" + VideoId;
         }
     }
 }

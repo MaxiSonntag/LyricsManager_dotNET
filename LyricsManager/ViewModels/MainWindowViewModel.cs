@@ -7,17 +7,39 @@ using System.Windows;
 using LyricsManager.Models;
 using LyricsManager.MVVM;
 using LyricsManager.Services;
+using MahApps.Metro.Controls.Dialogs;
 
 namespace LyricsManager.ViewModels
 {
+    /// <summary>
+    ///     View Model des Hauptfensters
+    /// </summary>
     internal class MainWindowViewModel : ViewModelBase
     {
+        /// <summary>
+        ///     Beinhaltet alle Songs
+        /// </summary>
         private List<SongViewModel> _allSongs;
+        /// <summary>
+        ///     Beinhaltet die Songs, die aktuell angezeigt werden
+        /// </summary>
         private ObservableCollection<SongViewModel> _songs;
+        /// <summary>
+        ///     Aktuell ausgewählter Song
+        /// </summary>
         private SongViewModel _selectedSong;
+        /// <summary>
+        ///     Text im Suchfeld
+        /// </summary>
         private string _filterText;
-
-        public SpotifyViewModel SpotifyViewModel { get; }
+        /// <summary>
+        ///     Information über den Authentifizierungsstatus von Spotify
+        /// </summary>
+        private bool _isSpotifyAuthorized;
+        /// <summary>
+        ///     Controller für die Verbindung mit Spotify (Web und Local)
+        /// </summary>
+        public SpotifyController SpotifyController { get; }
         
 
         public ObservableCollection<SongViewModel> Songs
@@ -73,9 +95,10 @@ namespace LyricsManager.ViewModels
             ConnectWebSpotifyCommand = new DelegateCommand(ConnectWebSpotifyCommandExecute);
             ConnectLocalSpotifyCommand = new DelegateCommand(ConnectLocalSpotifyCommandExecute);
             SearchAndPlaySpotifyCommand = new DelegateCommand(SearchAndPlaySpotifyCommandExecute);
-            PauseSpotifyCommand = new DelegateCommand(PauseSpotifyCommandExecute);
+            PauseSpotifyCommand = new DelegateCommand(StopSpotifyCommandExecute);
             ShowYoutubeCommand = new DelegateCommand(ShowYoutubeCommandExecute);
-            SpotifyViewModel = new SpotifyViewModel();
+            SpotifyController = new SpotifyController();
+            _isSpotifyAuthorized = false;
 
             if (Songs != null && Songs.Count > 0)
             {
@@ -85,7 +108,10 @@ namespace LyricsManager.ViewModels
 
         
 
-
+        /// <summary>
+        ///     Lädt gespeicherte Daten aus dem Dateisystem in das View Model
+        /// </summary>
+        /// <returns></returns>
         private async Task LoadDataAsync()
         {
             
@@ -96,6 +122,9 @@ namespace LyricsManager.ViewModels
                 
         }
 
+        /// <summary>
+        ///     Command zum Speichern der Songs auf das Dateisystem
+        /// </summary>
         private async void SaveCommandExecute(object obj)
         {
             await PersistencyService.SaveLyricsAsync(_allSongs.Select(vm => new Song
@@ -111,6 +140,9 @@ namespace LyricsManager.ViewModels
             }));
         }
 
+        /// <summary>
+        ///     Command zum Erstellen eines neuen Songs
+        /// </summary>
         private void NewCommandExecute(object obj)
         {
             
@@ -123,14 +155,21 @@ namespace LyricsManager.ViewModels
             searchWindow.ShowDialog();
         }
 
+        /// <summary>
+        ///     Command zum Löschen eines Songs
+        /// </summary>
         private void DeleteCommandExecute(object obj)
         {
             if (SelectedSong == null) return;
             
             _allSongs.Remove(SelectedSong);
             Songs.Remove(SelectedSong);
+            SelectedSong = Songs[0];
         }
 
+        /// <summary>
+        ///     Command zum Bearbeiten eines Songs
+        /// </summary>
         private void EditCommandExecute(object obj)
         {
             EditWindowViewModel vm = new EditWindowViewModel(SelectedSong);
@@ -144,36 +183,62 @@ namespace LyricsManager.ViewModels
             editWindow.ShowDialog();
         }
 
+        /// <summary>
+        ///     Command zum Suchen und Abspielen eines Liedes auf Spotify
+        /// </summary>
         private void SearchAndPlaySpotifyCommandExecute(object obj)
         {
-            if (SpotifyViewModel.IsWebConnected)
+            if (SpotifyController.IsWebConnected)
             {
-                SpotifyViewModel.SearchedArtist = SelectedSong.LyricArtist;
-                SpotifyViewModel.SearchedSong = SelectedSong.LyricSong;
+                SpotifyController.SearchedArtist = SelectedSong.LyricArtist;
+                SpotifyController.SearchedSong = SelectedSong.LyricSong;
 
-                SpotifyViewModel.SearchAndPlay();
+                SpotifyController.SearchAndPlay();
             }
             
         }
 
-        private void PauseSpotifyCommandExecute(object obj)
+        /// <summary>
+        ///     Command zum Stoppen eines aktuell Spielenden Liedes auf Spotify
+        /// </summary>
+        private void StopSpotifyCommandExecute(object obj)
         {
-            if (SpotifyViewModel.IsLocalConnected)
+            if (SpotifyController.IsLocalConnected)
             {
-                SpotifyViewModel.PauseLocalSpotify();
+                SpotifyController.PauseLocalSpotify();
             }
         }
 
+        /// <summary>
+        ///     Command zum Authentifizieren und Verbinden von Spotify (Web)
+        /// </summary>
         private void ConnectWebSpotifyCommandExecute(object obj)
         {
-            SpotifyViewModel.ConnectWebApi();
+            _isSpotifyAuthorized = SpotifyController.ConnectWebApi();
         }
 
+        /// <summary>
+        ///     Command zum Verbinden der lokalen Spotify-Installation
+        /// </summary>
         private void ConnectLocalSpotifyCommandExecute(object obj)
         {
-            SpotifyViewModel.ConnectLocalApi();
+            if (!_isSpotifyAuthorized)
+            {
+                ShowErrorFlyout("You haven't authorized",
+                    "You have to connect your Spotify account first to use this feature");
+                return;
+            }
+            var isConnected = SpotifyController.ConnectLocalApi();
+            if (!isConnected)
+            {
+                ShowErrorFlyout("Spotify is not running",
+                    "Please start your local Spotify installation to use this feature");
+            }
         }
 
+        /// <summary>
+        ///     Command zum Anzeigen der YouTube-Suchergebnisse
+        /// </summary>
         private void ShowYoutubeCommandExecute(object obj)
         {
             var vm = new YoutubeWindowViewModel(SelectedSong.LyricArtist, SelectedSong.LyricSong);
@@ -184,6 +249,9 @@ namespace LyricsManager.ViewModels
             youtubeWindow.ShowDialog();
         }
 
+        /// <summary>
+        ///     Filtert die angezeigten Songs auf Basis des Suchtextes
+        /// </summary>
         private void Filter()
         {
             Songs = string.IsNullOrWhiteSpace(FilterText)
@@ -193,6 +261,10 @@ namespace LyricsManager.ViewModels
                                                                                      0));
         }
 
+        /// <summary>
+        ///     Event Handler beim Schließen eines Fensters
+        /// </summary>
+        /// <param name="window">Das Fenster, das geschlossen wird</param>
         private void HandleDialogWindowClose(Window window)
         {
             
@@ -202,6 +274,25 @@ namespace LyricsManager.ViewModels
             {
                 SelectedSong = Songs[Songs.Count - 1];
             }
+        }
+
+        /// <summary>
+        ///     Öffnet ein Overlay (Flyout) mit Errorhandling-Informationen
+        /// </summary>
+        /// <param name="title">Der Titel des Flyouts</param>
+        /// <param name="message">Die Errorhandling-Nachricht des Flyouts</param>
+        private void ShowErrorFlyout(string title, string message)
+        {
+            var settings = new MetroDialogSettings()
+            {
+                AffirmativeButtonText = "Okay",
+                AnimateShow = true,
+                AnimateHide = true
+            };
+            var window = (MainWindow)Application.Current.MainWindow;
+            window.ShowMessageAsync(title,
+                message,
+                MessageDialogStyle.Affirmative, settings);
         }
 
     }

@@ -24,14 +24,14 @@
                 Name="TextBoxArtist"
                 Margin="0,0,0,12"
                 FontSize="18"
-                Text="{Binding Path=Song.LyricArtist, Mode=TwoWay, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
+                Text="{Binding Path=Song.LyricArtist, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
 
             <Label FontSize="12" Target="{Binding ElementName=TextBoxSong}">_Song</Label>
             <TextBox
                 Name="TextBoxSong"
                 Margin="0,0,0,12"
                 FontSize="18"
-                Text="{Binding Path=Song.LyricSong, Mode=TwoWay, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
+                Text="{Binding Path=Song.LyricSong, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
 
             <Label FontSize="12" Target="{Binding ElementName=TextBoxLyric}">_Lyrics</Label>
 

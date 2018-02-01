@@ -9,9 +9,13 @@ using System.Windows.Media;
 
 namespace LyricsManager.Converter
 {
+    /// <summary>
+    ///     Konvertiert einen Boolean-Wert zu einer Farbe (True=Grün, False=Rot)
+    /// </summary>
     [ValueConversion(typeof(bool), typeof(SolidColorBrush))]
     public class BoolToColorConverter : IValueConverter
     {
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             bool booleanValue = (bool)value;

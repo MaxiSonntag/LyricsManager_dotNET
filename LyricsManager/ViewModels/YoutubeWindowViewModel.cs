@@ -10,7 +10,10 @@ using LyricsManager.Services;
 
 namespace LyricsManager.ViewModels
 {
-    class YoutubeWindowViewModel : ViewModelBase
+    /// <summary>
+    ///     View Model des YouTube-Suchergebnis-Fensters
+    /// </summary>
+    internal class YoutubeWindowViewModel : ViewModelBase
     {
         private ObservableCollection<YoutubeSearchResultViewModel> _searchResults;
         private YoutubeSearchResultViewModel _selectedSong;
@@ -38,6 +41,11 @@ namespace LyricsManager.ViewModels
             set => Set(ref _selectedSong, value);
         }
 
+        /// <summary>
+        ///     Lädt YouTube Suchergebnisse von der YouTube-API
+        /// </summary>
+        /// <param name="artist">Der Name des Künstlers</param>
+        /// <param name="song">Der Name des Songs</param>
         private async Task LoadDataAsync(string artist, string song)
         {
 

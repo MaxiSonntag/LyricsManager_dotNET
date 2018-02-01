@@ -6,8 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 
-namespace LyricsManager
+namespace LyricsManager.Converter
 {
+    /// <summary>
+    ///     Invertiert einen Boolean-Wert (True->False, False->True) 
+    /// </summary>
     [ValueConversion(typeof(bool), typeof(bool))]
     public class InvertBoolConverter : IValueConverter
     {

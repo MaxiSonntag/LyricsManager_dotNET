@@ -8,10 +8,17 @@ using LyricsManager.Models;
 
 namespace LyricsManager.Services
 {
+    /// <summary>
+    ///     Klasse zum persistenten Speichern und Laden ´von Daten
+    /// </summary>
     static class PersistencyService
     {
         private const string FileName = "Songlist.xml";
 
+        /// <summary>
+        ///     Lädt (falls vorhanden) gespeicherte Songs vom Dateisystem.
+        /// </summary>
+        /// <returns>Liste der gespeicherten Songs</returns>
         public static async Task<List<Song>> LoadLyricsAsync()
         {
             await Task.Delay(0);
@@ -35,6 +42,11 @@ namespace LyricsManager.Services
                 return new List<Song>();
             }
         }
+
+        /// <summary>
+        ///     Speichert Songs auf dem Dateisystem (XML-Format)
+        /// </summary>
+        /// <param name="songs">Liste der zu speichernden Songs</param>
         public static async Task SaveLyricsAsync(IEnumerable<Song> songs)
         {
             await Task.Delay(0);

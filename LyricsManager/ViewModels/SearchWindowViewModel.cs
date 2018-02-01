@@ -9,8 +9,14 @@ using LyricsManager.Services;
 
 namespace LyricsManager.ViewModels
 {
-    class SearchWindowViewModel : ViewModelBaseWithValidation
+    /// <summary>
+    ///     View Model des Fensters zum Erstellen eines neuen Songs
+    /// </summary>
+    internal class SearchWindowViewModel : ViewModelBaseWithValidation
     {
+        /// <summary>
+        ///     Event Handler, der beim Schließen des Fensters aufgerufen wird
+        /// </summary>
         public event EventHandler OnCloseRequest;
 
         private List<SongViewModel> _resultList;
@@ -18,6 +24,9 @@ namespace LyricsManager.ViewModels
         private SongViewModel _selectedSong;
         private string _artist;
         private string _song;
+        private Song _downloadedSong;
+        private string _selectedLyricChecksum;
+        private int _selectedLyricId;
 
         public string EnteredArtist
         {
@@ -39,9 +48,7 @@ namespace LyricsManager.ViewModels
             }
         }
 
-        private Song _downloadedSong;
-        private string _selectedLyricChecksum;
-        private int _selectedLyricId;
+        
 
         public ObservableCollection<SongViewModel> SearchResults
         {

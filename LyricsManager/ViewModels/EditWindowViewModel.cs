@@ -5,10 +5,27 @@ using LyricsManager.Services;
 
 namespace LyricsManager.ViewModels
 {
+    /// <summary>
+    ///     View Model des Edit-Fensters
+    /// </summary>
     internal class EditWindowViewModel : ViewModelBase
     {
+        /// <summary>
+        ///     Der Song, der bearbeitet werden soll
+        /// </summary>
         private SongViewModel _song;
+        /// <summary>
+        ///     Die Listenposition des betroffenen Songs
+        /// </summary>
         public int Index;
+        /// <summary>
+        ///     Command zum persistenten Abspeichern der Songs
+        /// </summary>
+        public DelegateCommand SaveCommand { get; set; }
+        /// <summary>
+        ///     Event Handler, der beim Schließen des Fensters aufgerufen wird um das Hauptfenster zu aktualisieren
+        /// </summary>
+        public event EventHandler OnCloseRequest;
 
         public EditWindowViewModel(SongViewModel songViewModel)
         {
@@ -20,16 +37,16 @@ namespace LyricsManager.ViewModels
         {
         }
 
-        public DelegateCommand SaveCommand { get; set; }
-
         public SongViewModel Song
         {
             get => _song;
             set => Set(ref _song, value);
         }
 
-        public event EventHandler OnCloseRequest;
-
+        
+        /// <summary>
+        ///     Speichert die Änderungen ab und ruft den Event Handler auf, der das Fenster schließen soll.
+        /// </summary>
         private async void SaveCommandExecute(object obj)
         {
             var allSongs = await PersistencyService.LoadLyricsAsync();

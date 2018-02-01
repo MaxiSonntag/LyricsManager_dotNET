@@ -2,7 +2,10 @@
 
 namespace LyricsManager.ViewModels
 {
-    public class SongViewModel
+    /// <summary>
+    ///     View Model eines Songs
+    /// </summary>
+    internal class SongViewModel
     {
         public SongViewModel() { }
 

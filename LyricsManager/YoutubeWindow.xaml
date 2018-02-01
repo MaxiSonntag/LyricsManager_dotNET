@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="clr-namespace:LyricsManager.ViewModels"
     Title="YoutubeWindow"
-    Width="635"
+    Width="650"
     Height="650"
     mc:Ignorable="d">
 
@@ -16,132 +16,44 @@
         <viewModels:YoutubeWindowViewModel />
     </controls:MetroWindow.DataContext>
 
-
-    <!--ListView ItemsSource="{Binding SearchResults}">
-        <ListView.View >
-            <GridView >
-                <GridViewColumn>
-                    <GridViewColumn.CellTemplate>
-                        <DataTemplate DataType="viewModels:YoutubeSearchResultViewModel">
-                            <StackPanel MaxWidth="100">
-                                <Image Source="{Binding imageUrl}"></Image>
-                                <StackPanel>
-                                    <TextBlock Text="{Binding title}"
-                                               TextTrimming="CharacterEllipsis"
-                                               TextAlignment="Center"></TextBlock>
-                                    <TextBlock Text="{Binding description}"
-                                               TextTrimming="CharacterEllipsis"
-                                               TextAlignment="Center"></TextBlock>
-                                </StackPanel>
-                            </StackPanel>
-                        </DataTemplate>
-                    </GridViewColumn.CellTemplate>
-                </GridViewColumn>
-            </GridView>
-        </ListView.View>
-    </-->
-
-
-    <Grid>
-        <ItemsControl
-            Margin="5"
-            Background="Transparent"
-            ItemsSource="{Binding SearchResults}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel Orientation="Horizontal" />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate DataType="viewModels:YoutubeSearchResultViewModel">
-                    <Button MaxHeight="200"
+    <ScrollViewer>
+        <Grid>
+            <ItemsControl
+                Margin="5"
+                Background="Transparent"
+                ItemsSource="{Binding SearchResults}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="viewModels:YoutubeSearchResultViewModel">
+                        <Button
                             MaxWidth="200"
+                            MaxHeight="200"
                             Margin="4"
                             controls:ControlsHelper.CornerRadius="0"
                             Command="{Binding VideoPressedCommand}">
-                        <StackPanel>
-                            <Image Source="{Binding ImageUrl}" />
-                            <TextBlock
-                                FontSize="16"
-                                FontWeight="Bold"
-                                Text="{Binding Title}"
-                                TextAlignment="Center"
-                                MaxHeight="50"
-                                TextTrimming="CharacterEllipsis" />
-                            <TextBlock
-                                Foreground="#FF383838"
-                                Text="{Binding Description}"
-                                TextAlignment="Center"
-                                TextTrimming="CharacterEllipsis" />
-                        </StackPanel>
-                    </Button>
-                    
-
-
-
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-    </Grid>
-
-
-    <!--DockPanel Margin="12">
-        <Border Margin="0,0,0,7" DockPanel.Dock="Top">
-            <StackPanel>
-                <Grid>
-                    <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                        <Label
-                            Content="_Search Results"
-                            FontSize="24"
-                            Target="{Binding ElementName=ListBoxSongs}" />
-                    </StackPanel>
-                </Grid>
-            </StackPanel>
-        </Border>
-
-
-        <ScrollViewer
-            MaxHeight="600"
-            DockPanel.Dock="Left"
-            HorizontalScrollBarVisibility="Auto"
-            VerticalScrollBarVisibility="Auto">
-            <ListBox
-                Name="ListBoxSongs"
-                MinWidth="110"
-                MaxWidth="280"
-                BorderThickness="0,0,0,0"
-                DockPanel.Dock="Left"
-                Focusable="True"
-                ItemsSource="{Binding SearchResults}"
-                SelectedItem="{Binding SelectedSong, Mode=TwoWay}">
-                <ListBox.ItemContainerStyle>
-                    <Style TargetType="ListBoxItem">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                        <Setter Property="MaxWidth" Value="290" />
-                    </Style>
-                </ListBox.ItemContainerStyle>
-                <ListBox.ItemTemplate>
-                    <DataTemplate DataType="viewModels:YoutubeSearchResultViewModel">
-                        <DockPanel>
-                            <Image
-                                Width="36"
-                                Height="36"
-                                Margin="0,0,4,0"
-                                DockPanel.Dock="Left"
-                                Source="{Binding imageUrl}" />
-                            <StackPanel Margin="4,4,4,4" DockPanel.Dock="Right">
+                            <StackPanel>
+                                <Image Source="{Binding ImageUrl}" />
                                 <TextBlock
-                                    FontSize="18"
-                                    TextAlignment="Right"
-                                    TextTrimming="CharacterEllipsis">
-                                    <Run Text="{Binding title}" />
-                                </TextBlock>
+                                    MaxHeight="50"
+                                    FontSize="16"
+                                    FontWeight="Bold"
+                                    Text="{Binding Title}"
+                                    TextAlignment="Center"
+                                    TextTrimming="CharacterEllipsis" />
+                                <TextBlock
+                                    Foreground="#FF383838"
+                                    Text="{Binding Description}"
+                                    TextAlignment="Center"
+                                    TextTrimming="CharacterEllipsis" />
                             </StackPanel>
-
-                        </DockPanel>
+                        </Button>
                     </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-        </ScrollViewer>
-    </-->
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
+    </ScrollViewer>
 </controls:MetroWindow>

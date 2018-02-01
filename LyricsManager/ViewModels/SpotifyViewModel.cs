@@ -10,15 +10,18 @@ using SpotifyAPI.Local;
 
 namespace LyricsManager.ViewModels
 {
-    class SpotifyViewModel : ViewModelBase
+    /// <summary>
+    ///     Controller für die Verbindung der Spotify-Dienste (Web und Local)
+    /// </summary>
+    internal class SpotifyController : ViewModelBase
     {
         private readonly SpotifyLocalApiService _spotifyLocalApiService;
         private readonly SpotifyWebApiService _spotifyWebApiService;
         
 
 
-        public string SearchedArtist { get; set; }
-        public string SearchedSong { get; set; }
+        public string SearchedArtist { private get; set; }
+        public string SearchedSong { private get; set; }
 
         private bool _isLocalConnected;
         private bool _isWebConnected;
@@ -35,7 +38,7 @@ namespace LyricsManager.ViewModels
             set => Set(ref _isWebConnected, value);
         }
 
-        public SpotifyViewModel()
+        public SpotifyController()
         {
             _spotifyLocalApiService = new SpotifyLocalApiService();
             _spotifyWebApiService = new SpotifyWebApiService("", "");
@@ -44,15 +47,15 @@ namespace LyricsManager.ViewModels
         }
 
 
-        public void ConnectWebApi()
+        public bool ConnectWebApi()
         {
             Task.Run(() => _spotifyWebApiService.Authenticate()).Wait();
-            IsWebConnected = _spotifyWebApiService.IsConnected();
+            return IsWebConnected = _spotifyWebApiService.IsConnected();
         }
 
-        public void ConnectLocalApi()
+        public bool ConnectLocalApi()
         {
-            IsLocalConnected = _spotifyLocalApiService.Connect();
+            return IsLocalConnected = _spotifyLocalApiService.Connect();
         }
 
         public void SearchAndPlay()

@@ -19,7 +19,7 @@
 
     <controls:MetroWindow.Resources>
         <converter:BoolToColorConverter x:Key="BoolToColorConverter" />
-        <lyricsManager:InvertBoolConverter x:Key="InvertBoolConverter" />
+        <converter:InvertBoolConverter x:Key="InvertBoolConverter" />
 
     </controls:MetroWindow.Resources>
 
@@ -31,7 +31,7 @@
                     HorizontalAlignment="Left"
                     Command="{Binding ConnectLocalSpotifyCommand}"
                     Content="Connect Local Spotify"
-                    IsEnabled="{Binding Path=SpotifyViewModel.IsLocalConnected, Converter={StaticResource InvertBoolConverter}}" />
+                    IsEnabled="{Binding Path=SpotifyController.IsLocalConnected, Converter={StaticResource InvertBoolConverter}}" />
 
                 <Border
                     Width="10"
@@ -39,7 +39,7 @@
                     Margin="0,4,4,4"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
-                    Background="{Binding Path=SpotifyViewModel.IsLocalConnected, Converter={StaticResource BoolToColorConverter}}"
+                    Background="{Binding Path=SpotifyController.IsLocalConnected, Converter={StaticResource BoolToColorConverter}}"
                     BorderBrush="Black"
                     BorderThickness="1"
                     CornerRadius="100" 
@@ -51,7 +51,7 @@
                 <Button
                     Command="{Binding ConnectWebSpotifyCommand}"
                     Content="Connect Spotify Account"
-                    IsEnabled="{Binding Path=SpotifyViewModel.IsWebConnected, Converter={StaticResource InvertBoolConverter}}" />
+                    IsEnabled="{Binding Path=SpotifyController.IsWebConnected, Converter={StaticResource InvertBoolConverter}}" />
 
                 <Border
                     Width="10"
@@ -59,7 +59,7 @@
                     Margin="0,4,4,4"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
-                    Background="{Binding Path=SpotifyViewModel.IsWebConnected, Converter={StaticResource BoolToColorConverter}}"
+                    Background="{Binding Path=SpotifyController.IsWebConnected, Converter={StaticResource BoolToColorConverter}}"
                     BorderBrush="Black"
                     BorderThickness="1"
                     CornerRadius="100"
