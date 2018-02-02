@@ -71,16 +71,50 @@ namespace LyricsManager.ViewModels
             }
         }
 
+        /// <summary>
+        ///     Command zum Löschen eines Songs
+        /// </summary>
         public DelegateCommand DeleteCommand { get; set; }
+        /// <summary>
+        ///     Command zum Erstellen eines neuen Songs
+        /// </summary>
         public DelegateCommand NewCommand { get; set; }
+        /// <summary>
+        ///     Command zum Speichern der aktuellen Songliste
+        /// </summary>
         public DelegateCommand SaveCommand { get; set; }
+        /// <summary>
+        ///     Command zum Bearbeiten des selektierten Songs
+        /// </summary>
         public DelegateCommand EditCommand { get; set; }
+        /// <summary>
+        ///     Command zum Verbinden mit der lokalen Spotify Installation
+        /// </summary>
         public DelegateCommand ConnectLocalSpotifyCommand { get; set; }
+        /// <summary>
+        ///     Command zum Verbinden und Authentifizieren mit Spotify (Web)
+        /// </summary>
         public DelegateCommand ConnectWebSpotifyCommand { get; set; }
+        /// <summary>
+        ///     Command zum Suchen und abspielen eines Songs in Spotify
+        /// </summary>
         public DelegateCommand SearchAndPlaySpotifyCommand { get; set; }
+        /// <summary>
+        ///     Command zum Pausieren des aktuell abgespielten Songs in Spotify
+        /// </summary>
         public DelegateCommand PauseSpotifyCommand { get; set; }
+        /// <summary>
+        ///     Command zum Erstellen eines neuen Songs auf Basis des aktuell in Spotify abgespielten Songs
+        /// </summary>
+        public DelegateCommand LyricsForCurrentTrackCommand { get; set; }
+        /// <summary>
+        ///     Command zum Anzeigen der Suchergebnisse zum selektieren Song auf YouTube
+        /// </summary>
         public DelegateCommand ShowYoutubeCommand { get; set; }
 
+        /// <summary>
+        ///     Information, ob ein Song selektiert ist
+        /// </summary>
         public bool IsSelectionValid => SelectedSong != null;
 
         
@@ -96,6 +130,7 @@ namespace LyricsManager.ViewModels
             ConnectLocalSpotifyCommand = new DelegateCommand(ConnectLocalSpotifyCommandExecute);
             SearchAndPlaySpotifyCommand = new DelegateCommand(SearchAndPlaySpotifyCommandExecute);
             PauseSpotifyCommand = new DelegateCommand(StopSpotifyCommandExecute);
+            LyricsForCurrentTrackCommand = new DelegateCommand(LyricsForCurrentTrackCommandExecute);
             ShowYoutubeCommand = new DelegateCommand(ShowYoutubeCommandExecute);
             SpotifyController = new SpotifyController();
             _isSpotifyAuthorized = false;
@@ -105,7 +140,6 @@ namespace LyricsManager.ViewModels
                 SelectedSong = Songs[0];
             }
         }
-
         
 
         /// <summary>
@@ -200,7 +234,7 @@ namespace LyricsManager.ViewModels
         }
 
         /// <summary>
-        ///     Command zum Stoppen eines aktuell Spielenden Liedes auf Spotify
+        ///     Command zum Stoppen eines aktuell spielenden Liedes auf Spotify
         /// </summary>
         private void StopSpotifyCommandExecute(object obj)
         {
@@ -208,6 +242,42 @@ namespace LyricsManager.ViewModels
             {
                 SpotifyController.PauseLocalSpotify();
             }
+        }
+
+        /// <summary>
+        ///     Command zum Laden von Lyrics eines aktuell spielenden Liedes auf Spotify
+        /// </summary>
+        private void LyricsForCurrentTrackCommandExecute(object obj)
+        {
+            var infos = SpotifyController.GetInfoForCurrentTrack();
+
+            if (infos.Count == 0)
+            {
+                if (!SpotifyController.IsWebConnected)
+                {
+                    ShowErrorFlyout("You haven't authorized :(", "You have to connect your Spotify account first to use this feature");
+                }else if (!SpotifyController.IsLocalConnected)
+                {
+                    ShowErrorFlyout("Spotify is not running :o",
+                        "Please start your local Spotify installation to use this feature");
+                }
+                else
+                {
+                    ShowErrorFlyout("Oops, something went wrong...",
+                        "Sorry, but that's all we know");
+                }
+                return;
+            }
+            SearchWindowViewModel vm = new SearchWindowViewModel();
+            vm.EnteredArtist = infos[0];
+            vm.EnteredSong = infos[1];
+            SearchWindow searchWindow = new SearchWindow
+            {
+                DataContext = vm
+            };
+            vm.OnCloseRequest += (s, e) => HandleDialogWindowClose(searchWindow);
+            searchWindow.ShowDialog();
+
         }
 
         /// <summary>
@@ -225,14 +295,14 @@ namespace LyricsManager.ViewModels
         {
             if (!_isSpotifyAuthorized)
             {
-                ShowErrorFlyout("You haven't authorized",
+                ShowErrorFlyout("You haven't authorized :(",
                     "You have to connect your Spotify account first to use this feature");
                 return;
             }
             var isConnected = SpotifyController.ConnectLocalApi();
             if (!isConnected)
             {
-                ShowErrorFlyout("Spotify is not running",
+                ShowErrorFlyout("Spotify is not running :o",
                     "Please start your local Spotify installation to use this feature");
             }
         }

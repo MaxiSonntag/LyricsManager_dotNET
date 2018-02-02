@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using LyricsManager.ViewModels;
 
 namespace LyricsManager
 {

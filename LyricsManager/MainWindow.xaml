@@ -5,7 +5,6 @@
     xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     xmlns:converter="clr-namespace:LyricsManager.Converter"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:lyricsManager="clr-namespace:LyricsManager"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="clr-namespace:LyricsManager.ViewModels"
     Title="Lyrics Manager"
@@ -42,8 +41,8 @@
                     Background="{Binding Path=SpotifyController.IsLocalConnected, Converter={StaticResource BoolToColorConverter}}"
                     BorderBrush="Black"
                     BorderThickness="1"
-                    CornerRadius="100" 
-                    Opacity="0.8"/>
+                    CornerRadius="100"
+                    Opacity="0.8" />
             </StackPanel>
 
 
@@ -69,32 +68,26 @@
     </controls:MetroWindow.RightWindowCommands>
 
 
-    
+
     <DockPanel Margin="12">
-        
+
         <Border Margin="0,0,0,7" DockPanel.Dock="Top">
-            <StackPanel>
-                <Grid>
-                    <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                        <Label
-                            Content="_Songs"
-                            FontSize="24"
-                            Target="{Binding ElementName=ListBoxSongs}" />
-                    </StackPanel>
-                    <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-                        <TextBox
-                            Name="TextBoxSearch"
-                            MaxWidth="250"
-                            Padding="4,4,4,4"
-                            VerticalAlignment="Center"
-                            VerticalContentAlignment="Center"
-                            controls:TextBoxHelper.ClearTextButton="True"
-                            controls:TextBoxHelper.UseFloatingWatermark="False"
-                            controls:TextBoxHelper.Watermark="Search..."
-                            FontSize="14"
-                            Text="{Binding FilterText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                    </StackPanel>
-                </Grid>
+            <StackPanel Orientation="Horizontal">
+                <Label
+                    Content="_Songs"
+                    FontSize="24"
+                    Target="{Binding ElementName=ListBoxSongs}" />
+                <TextBox
+                    MinWidth="150"
+                    MaxWidth="200"
+                    Margin="18,8,4,4"
+                    Padding="4"
+                    HorizontalAlignment="Left"
+                    controls:TextBoxHelper.ClearTextButton="True"
+                    controls:TextBoxHelper.UseFloatingWatermark="False"
+                    controls:TextBoxHelper.Watermark="Search..."
+                    FontSize="14"
+                    Text="{Binding FilterText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             </StackPanel>
         </Border>
 
@@ -107,8 +100,7 @@
             <ListBox
                 Name="ListBoxSongs"
                 MinWidth="110"
-                MaxWidth="280"
-                BorderThickness="0,0,0,0"
+                MaxWidth="300"
                 DockPanel.Dock="Left"
                 Focusable="True"
                 ItemsSource="{Binding Songs}"
@@ -160,10 +152,9 @@
                 BorderBrush="Black"
                 Command="{Binding NewCommand}"
                 DockPanel.Dock="Left"
-                Style="{DynamicResource MetroCircleButtonStyle}">
-                <Rectangle
-                    Width="20"
-                    Height="20">
+                Style="{DynamicResource MetroCircleButtonStyle}"
+                ToolTip="Add new song">
+                <Rectangle Width="20" Height="20">
                     <Rectangle.Fill>
                         <VisualBrush Visual="{StaticResource appbar_add}" />
                     </Rectangle.Fill>
@@ -194,7 +185,8 @@
                         BorderBrush="#00000000"
                         Command="{Binding SearchAndPlaySpotifyCommand}"
                         Cursor="Hand"
-                        Style="{DynamicResource MetroCircleButtonStyle}">
+                        Style="{DynamicResource MetroCircleButtonStyle}"
+                        ToolTip="Play selected song in Spotify">
                         <Rectangle
                             Width="25"
                             Height="25"
@@ -211,13 +203,32 @@
                         BorderBrush="#00000000"
                         Command="{Binding PauseSpotifyCommand}"
                         Cursor="Hand"
-                        Style="{DynamicResource MetroCircleButtonStyle}">
+                        Style="{DynamicResource MetroCircleButtonStyle}"
+                        ToolTip="Stop currently playing song in Spotify">
                         <Rectangle
                             Width="25"
                             Height="25"
                             Margin="4">
                             <Rectangle.Fill>
                                 <VisualBrush Visual="{StaticResource appbar_control_stop}" />
+                            </Rectangle.Fill>
+                        </Rectangle>
+                    </Button>
+
+                    <Button
+                        Width="45"
+                        Height="45"
+                        BorderBrush="#00000000"
+                        Command="{Binding LyricsForCurrentTrackCommand}"
+                        Cursor="Hand"
+                        Style="{DynamicResource MetroCircleButtonStyle}"
+                        ToolTip="Download Lyrics for currently playing Track in Spotify">
+                        <Rectangle
+                            Width="15"
+                            Height="25"
+                            Margin="4">
+                            <Rectangle.Fill>
+                                <VisualBrush Visual="{StaticResource appbar_information}" />
                             </Rectangle.Fill>
                         </Rectangle>
                     </Button>
@@ -238,7 +249,8 @@
                     BorderBrush="Black"
                     Command="{Binding EditCommand}"
                     IsEnabled="{Binding IsSelectionValid}"
-                    Style="{DynamicResource MetroCircleButtonStyle}">
+                    Style="{DynamicResource MetroCircleButtonStyle}"
+                    ToolTip="Edit selected song">
                     <Rectangle
                         Width="20"
                         Height="20"
@@ -257,7 +269,8 @@
                     BorderBrush="Black"
                     Command="{Binding DeleteCommand}"
                     IsEnabled="{Binding IsSelectionValid}"
-                    Style="{DynamicResource MetroCircleButtonStyle}">
+                    Style="{DynamicResource MetroCircleButtonStyle}"
+                    ToolTip="Delete selected song">
                     <Rectangle
                         Width="20"
                         Height="20"
@@ -290,9 +303,6 @@
                             Name="TextBoxSong"
                             FontSize="22"
                             Text="{Binding Path=SelectedSong.LyricSong, Mode=TwoWay, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
-
-
-
                         <TextBlock
                             Name="TextBoxArtist"
                             FontSize="15"
@@ -329,9 +339,7 @@
                         </Hyperlink>
                     </TextBlock>
                     <TextBlock HorizontalAlignment="Right" Cursor="Hand">
-                        <Hyperlink
-                            Command="{Binding ShowYoutubeCommand}"
-                            TextDecorations="">
+                        <Hyperlink Command="{Binding ShowYoutubeCommand}" TextDecorations="">
                             <Rectangle
                                 Width="20"
                                 Height="20"

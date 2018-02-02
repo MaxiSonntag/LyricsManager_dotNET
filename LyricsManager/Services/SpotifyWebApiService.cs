@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SpotifyAPI.Web;
 using SpotifyAPI.Web.Auth;
@@ -54,16 +48,11 @@ namespace LyricsManager.Services
             
 
         }
-
-        public string GetAccessToken()
-        {
-            if (_spotifyWebApi != null)
-            {
-                return _spotifyWebApi.AccessToken;
-            }
-            return "";
-        }
-
+        
+        /// <summary>
+        ///     Information ob der Nutzer mit der SpotifyWeb-API verbunden ist
+        /// </summary>
+        /// <returns></returns>
         public bool IsConnected()
         {
             if (_spotifyWebApi != null)

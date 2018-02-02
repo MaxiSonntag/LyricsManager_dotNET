@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using LyricsManager.MVVM;
 using LyricsManager.Services;
-using SpotifyAPI.Local;
 
 namespace LyricsManager.ViewModels
 {
@@ -18,8 +15,6 @@ namespace LyricsManager.ViewModels
         private readonly SpotifyLocalApiService _spotifyLocalApiService;
         private readonly SpotifyWebApiService _spotifyWebApiService;
         
-
-
         public string SearchedArtist { private get; set; }
         public string SearchedSong { private get; set; }
 
@@ -46,18 +41,28 @@ namespace LyricsManager.ViewModels
             IsWebConnected = false;
         }
 
-
+        /// <summary>
+        ///     Verbindet bzw. Authentifiziert den Nutzer mit Spotify (Web)
+        /// </summary>
+        /// <returns>Information ob Verbindung erfolgreich</returns>
         public bool ConnectWebApi()
         {
             Task.Run(() => _spotifyWebApiService.Authenticate()).Wait();
             return IsWebConnected = _spotifyWebApiService.IsConnected();
         }
 
+        /// <summary>
+        ///     Verbindet die lokale Spotify-Installation
+        /// </summary>
+        /// <returns>Information ob Verbindung erfolgreich</returns>
         public bool ConnectLocalApi()
         {
             return IsLocalConnected = _spotifyLocalApiService.Connect();
         }
 
+        /// <summary>
+        ///     Sucht ein Lied auf Spotify und spielt dieses ab
+        /// </summary>
         public void SearchAndPlay()
         {
             if (!IsWebConnected)
@@ -86,13 +91,25 @@ namespace LyricsManager.ViewModels
             
         }
 
+        /// <summary>
+        ///     Pausiert das aktuell abgespielte Lied
+        /// </summary>
         public void PauseLocalSpotify()
         {
             if (IsLocalConnected)
             {
                 _spotifyLocalApiService.PauseSong();
             }
-            return;
+        }
+
+        /// <summary>
+        ///     Lädt Künstler und Titel zum aktuell abgespielten Lied
+        /// </summary>
+        /// <returns></returns>
+        public List<string> GetInfoForCurrentTrack()
+        {
+            var infos = Task.Run(_spotifyLocalApiService.GetCurrentTrackInfos).Result;
+            return infos;
         }
     }
 }

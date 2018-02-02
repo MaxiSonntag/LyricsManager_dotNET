@@ -25,8 +25,6 @@ namespace LyricsManager.ViewModels
         private string _artist;
         private string _song;
         private Song _downloadedSong;
-        private string _selectedLyricChecksum;
-        private long _selectedLyricId;
 
         public string EnteredArtist
         {
@@ -66,11 +64,26 @@ namespace LyricsManager.ViewModels
             }
         }
 
+        /// <summary>
+        ///     Command zum Suchen von verfügbaren Lyrics
+        /// </summary>
         public DelegateCommand SearchCommand { get; set; }
+        /// <summary>
+        ///     Command zum Downloaden der Lyrics des selektierten Songs und Rückkehr zum MainWindow
+        /// </summary>
         public DelegateCommand ApplyCommand { get; set; }
+        /// <summary>
+        ///     Command zum Erstellen eines neuen Songs ohne Lyrics herunterzuladen
+        /// </summary>
         public DelegateCommand ManualCommand { get; set; }
 
+        /// <summary>
+        ///     Information ob sowohl Künstler als auch Titel nicht leer sind -> Aktiviert Möglichkeit zur Suche nach verfügbaren Lyrics
+        /// </summary>
         public bool IsSearchEnabled => !string.IsNullOrWhiteSpace(EnteredArtist) && !string.IsNullOrWhiteSpace(EnteredSong);
+        /// <summary>
+        ///     Information ob ein valides Sucherergebnis selektiert ist
+        /// </summary>
         public bool IsApplyEnabled => SelectedSearchViewModel != null && SelectedSearchViewModel.LyricId != -1;
         
 
@@ -82,8 +95,6 @@ namespace LyricsManager.ViewModels
             _searchResults = new ObservableCollection<SongViewModel>();
             _resultList = new List<SongViewModel>();
             _downloadedSong = new Song();
-            _selectedLyricChecksum = "";
-            _selectedLyricId = 0;
         }
 
         private void SearchCommandExecute(object obj)
@@ -96,17 +107,19 @@ namespace LyricsManager.ViewModels
             Task.Run(SearchSongsAsync);
         }
         
-
+        /// <summary>
+        ///     Lädt Lyrics zum selektierten Suchergebnis herunter, speichert es und kehrt zum MainWindow zurück
+        /// </summary>
         private void ApplyCommandExecute(object obj)
         {
-            _selectedLyricId = SelectedSearchViewModel.LyricId;
-            _selectedLyricChecksum = SelectedSearchViewModel.LyricChecksum;
             Task.Run(DownloadSongAsync).Wait();
             Task.Run(SaveDownloadedSong).Wait();
             OnCloseRequest?.Invoke(this, EventArgs.Empty);
         }
         
-
+        /// <summary>
+        ///     Übernimmt eingegebenen Künstler und/oder Titel, speichert das Objekt und kehrt zum MainWindow zurück
+        /// </summary>
         private void ManualCommandExecute(object obj)
         {
             var resultSong = new Song();
@@ -126,6 +139,10 @@ namespace LyricsManager.ViewModels
             OnCloseRequest?.Invoke(this, EventArgs.Empty);
         }
 
+        /// <summary>
+        ///     Sucht nach verfügbaren Lyrics
+        /// </summary>
+        /// <returns></returns>
         private async Task SearchSongsAsync()
         {
             List<Song> list = await DownloadService.DownloadSearchResultsAsync(_artist, _song);
@@ -147,6 +164,10 @@ namespace LyricsManager.ViewModels
             
         }
 
+        /// <summary>
+        ///     Lädt Lyrics zum selektierten Suchergebnis herunter
+        /// </summary>
+        /// <returns></returns>
         private async Task DownloadSongAsync()
         {
             var song = await DownloadService.DownloadSongByIdAsync(SelectedSearchViewModel);
@@ -154,6 +175,10 @@ namespace LyricsManager.ViewModels
             
         }
 
+        /// <summary>
+        ///     Speichert den neu erstellten Song
+        /// </summary>
+        /// <returns></returns>
         private async Task SaveDownloadedSong()
         {
             List<Song> savedSongs = await PersistencyService.LoadLyricsAsync();
@@ -161,12 +186,22 @@ namespace LyricsManager.ViewModels
             await PersistencyService.SaveLyricsAsync(savedSongs);
         }
 
+        /// <summary>
+        ///     Überprüft ob ein Künstler eingegeben wurde
+        /// </summary>
+        /// <param name="artist">Eingegebener Künstler</param>
+        /// <returns>Information ob die Eingabe valide ist (nicht unzugewiesen oder leer)</returns>
         private bool IsArtistValid(string artist, [CallerMemberName] string propertyName = null)
         {
             string error = "Please enter an Artist.";
             return SetError(() => !string.IsNullOrWhiteSpace(artist), propertyName, error);
         }
 
+        /// <summary>
+        ///     Überprüft ob ein Titel eingegeben wurde
+        /// </summary>
+        /// <param name="song">Eingegebener Titel</param>
+        /// <returns>Information ob die Eingabe valide ist (nicht unzugewiesen oder leer)</returns>
         private bool IsSongValid(string song, [CallerMemberName] string propertyName = null)
         {
             string error = "Please enter a Song.";

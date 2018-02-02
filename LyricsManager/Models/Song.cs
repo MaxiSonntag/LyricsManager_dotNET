@@ -47,6 +47,10 @@ namespace LyricsManager.Models
         /// </summary>
         public bool ChartLyricsApi { get; set; }
 
+        /// <summary>
+        ///     Liefert die String-Repräsentation eines Songs
+        /// </summary>
+        /// <returns>Die String-Repräsentation eines Songs</returns>
         public override string ToString()
         {
             return "TrackId: " + TrackId + ", LyricId: " + LyricId + ", Artist: " + LyricArtist + ", Song: " +

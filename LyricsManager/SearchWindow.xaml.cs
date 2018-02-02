@@ -1,5 +1,5 @@
 ﻿using System.Windows;
-using LyricsManager.ViewModels;
+using System.Windows.Input;
 
 namespace LyricsManager
 {
@@ -13,27 +13,28 @@ namespace LyricsManager
             InitializeComponent();
         }
 
-        /*private void AcceptButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            var context = DataContext as SearchWindowViewModel;
-            context?.SearchCommand.Execute(null);
-        }*/
-
+        /// <summary>
+        ///     Schließt das SearchWindow beim Betätigen des Cancel-Buttons
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CancelButton_OnClick(object sender, RoutedEventArgs e)
         {
             Close();
         }
 
-        /*private void ApplyButton_OnClick(object sender, RoutedEventArgs e)
+        /// <summary>
+        ///     Ermöglicht die Ausführung der Suche beim Betätigen der Enter-Taste
+        /// </summary>
+        private void TextBox_OnKeyDown(object sender, KeyEventArgs e)
         {
-            var context = DataContext as SearchWindowViewModel;
-            context?.ApplyCommand.Execute(null);
+            if (e.Key == Key.Return)
+            {
+                if (SearchButton.IsEnabled)
+                {
+                    SearchButton.Command.Execute(null);
+                }
+            }
         }
-
-        private void ManualButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            var context = DataContext as SearchWindowViewModel;
-            context?.ManualCommand.Execute(null);
-        }*/
     }
 }

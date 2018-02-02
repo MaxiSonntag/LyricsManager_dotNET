@@ -40,14 +40,20 @@
 
     <StackPanel Margin="12">
         <Label>Artist</Label>
-        <TextBox Margin="0,0,0,12" Text="{Binding EnteredArtist, Mode=TwoWay, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
+        <TextBox Margin="0,0,0,12" 
+                 Text="{Binding EnteredArtist, Mode=TwoWay, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" 
+                 KeyDown="TextBox_OnKeyDown"/>
         <Label>Song</Label>
-        <TextBox Margin="0,0,0,12" Text="{Binding EnteredSong, Mode=TwoWay, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
+        <TextBox
+            Margin="0,0,0,12"
+            KeyDown="TextBox_OnKeyDown"
+            Text="{Binding EnteredSong, Mode=TwoWay, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
         <StackPanel
             Margin="0,12,0,12"
             HorizontalAlignment="Right"
             Orientation="Horizontal">
             <Button
+                Name="SearchButton"
                 Command="{Binding SearchCommand}"
                 Content="Search"
                 IsEnabled="{Binding IsSearchEnabled}" />

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using LyricsManager.MVVM;
 
 namespace LyricsManager.ViewModels
@@ -13,11 +8,30 @@ namespace LyricsManager.ViewModels
     /// </summary>
     internal class YoutubeSearchResultViewModel
     {
+        /// <summary>
+        ///     Link zum Preview-Bild eines YouTube-Videos
+        /// </summary>
         public string ImageUrl { get; set; }
+        /// <summary>
+        ///     Die Id des Videos
+        /// </summary>
         private string VideoId { get; }
+        /// <summary>
+        ///     Der Titel des Videos
+        /// </summary>
         public string Title { get; set; }
+        /// <summary>
+        ///     Die Beschreibung eines Videos
+        /// </summary>
         public string Description { get; set; }
+        /// <summary>
+        ///     Die Url zum Video
+        /// </summary>
         private string WatchUrl { get; }
+
+        /// <summary>
+        ///     Command zum Öffnen des Videos im Browser
+        /// </summary>
         public DelegateCommand VideoPressedCommand { get; set; }
 
         public YoutubeSearchResultViewModel(YoutubeSearchResultViewModel model)
@@ -31,9 +45,8 @@ namespace LyricsManager.ViewModels
         }
 
         /// <summary>
-        ///     Öffnet die YouTube-Website des entsprechenden Liedes
+        ///     Öffnet die YouTube-Website des entsprechenden Videos im Browser
         /// </summary>
-        /// <param name="obj"></param>
         private void VideoPressedCommandExecute(object obj)
         {
             Process.Start(new ProcessStartInfo(WatchUrl));

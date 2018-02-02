@@ -4,7 +4,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:LyricsManager"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="clr-namespace:LyricsManager.ViewModels"
     Title="YoutubeWindow"
@@ -17,43 +16,42 @@
     </controls:MetroWindow.DataContext>
 
     <ScrollViewer>
-        <Grid>
-            <ItemsControl
-                Margin="5"
-                Background="Transparent"
-                ItemsSource="{Binding SearchResults}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel Orientation="Horizontal" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="viewModels:YoutubeSearchResultViewModel">
-                        <Button
-                            MaxWidth="200"
-                            MaxHeight="200"
-                            Margin="4"
-                            controls:ControlsHelper.CornerRadius="0"
-                            Command="{Binding VideoPressedCommand}">
-                            <StackPanel>
-                                <Image Source="{Binding ImageUrl}" />
-                                <TextBlock
-                                    MaxHeight="50"
-                                    FontSize="16"
-                                    FontWeight="Bold"
-                                    Text="{Binding Title}"
-                                    TextAlignment="Center"
-                                    TextTrimming="CharacterEllipsis" />
-                                <TextBlock
-                                    Foreground="#FF383838"
-                                    Text="{Binding Description}"
-                                    TextAlignment="Center"
-                                    TextTrimming="CharacterEllipsis" />
-                            </StackPanel>
-                        </Button>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </Grid>
+        <ItemsControl
+            Margin="5"
+            Background="Transparent"
+            ItemsSource="{Binding SearchResults}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="viewModels:YoutubeSearchResultViewModel">
+                    <Button
+                        MaxWidth="200"
+                        MaxHeight="200"
+                        Margin="4"
+                        controls:ControlsHelper.CornerRadius="0"
+                        Command="{Binding VideoPressedCommand}"
+                        ToolTip="{Binding Title}">
+                        <StackPanel>
+                            <Image Source="{Binding ImageUrl}" />
+                            <TextBlock
+                                MaxHeight="50"
+                                FontSize="16"
+                                FontWeight="Bold"
+                                Text="{Binding Title}"
+                                TextAlignment="Center"
+                                TextTrimming="CharacterEllipsis" />
+                            <TextBlock
+                                Foreground="#FF383838"
+                                Text="{Binding Description}"
+                                TextAlignment="Center"
+                                TextTrimming="CharacterEllipsis" />
+                        </StackPanel>
+                    </Button>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
     </ScrollViewer>
 </controls:MetroWindow>

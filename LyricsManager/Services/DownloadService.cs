@@ -10,7 +10,6 @@ using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
 using LyricsManager.Models;
 using LyricsManager.ViewModels;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace LyricsManager.Services
@@ -70,7 +69,7 @@ namespace LyricsManager.Services
                 var result = client.DownloadString(searchUrl);
                 var doc = new XmlDocument();
                 doc.LoadXml(result);
-                Console.WriteLine("Anzahl: " + doc.ChildNodes[1].ChildNodes.Count);
+                Console.WriteLine("Anzahl: " + (doc.ChildNodes[1].ChildNodes.Count-1));
                 for (int i = 0; i < doc.ChildNodes[1].ChildNodes.Count - 1; i++)
                 {
                     var trackId = doc.ChildNodes[1].ChildNodes[i].ChildNodes[0].InnerText;
@@ -139,7 +138,6 @@ namespace LyricsManager.Services
                 var result = client.DownloadString(searchUrl);
                 var cuttedJsonString = result.Substring(9, result.Length - 11);
                 var doc = JObject.Parse(cuttedJsonString);
-                //doc.LoadXml(cuttedJsonString);
                 var trackList = doc.Property("message").First.First.Next.First.First.First;
                 Console.WriteLine("Anzahl MusixMatch: " + trackList.Count());
                 for (var i = 0; i < trackList.Children().Count(); i++)
@@ -192,7 +190,6 @@ namespace LyricsManager.Services
         ///     Lädt alle Details zu einem spezifischen Song herunter.
         /// </summary>
         /// <param name="s">Das ViewModel des gesuchten Songs</param>
-        /// <param name="chartLyrics">Die Information, ob das Lied von ChartLyrics oder von Musixmatch gefunden wurde</param>
         /// <returns>Einen einzelnen Song inkl. Lyrics</returns>
         public static async Task<Song> DownloadSongByIdAsync(SongViewModel s)
         {
@@ -343,7 +340,7 @@ namespace LyricsManager.Services
 
         /// <summary>
         ///     Lädt ein Bild für einen Song herunter. Ist ein Bild bei verfügbar,
-        ///     wird es heruntergeladen, falls nciht wird ein Placeholder-Bild verwendet.
+        ///     wird es heruntergeladen, falls nicht wird ein Placeholder-Bild verwendet.
         /// </summary>
         /// <param name="song">Der Song, zu dem ein Bild hinzugefügt werden soll</param>
         /// <returns>Den Song inkl. Bild</returns>
