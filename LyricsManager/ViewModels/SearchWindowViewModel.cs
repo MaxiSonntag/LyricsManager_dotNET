@@ -26,7 +26,7 @@ namespace LyricsManager.ViewModels
         private string _song;
         private Song _downloadedSong;
         private string _selectedLyricChecksum;
-        private int _selectedLyricId;
+        private long _selectedLyricId;
 
         public string EnteredArtist
         {
@@ -149,7 +149,7 @@ namespace LyricsManager.ViewModels
 
         private async Task DownloadSongAsync()
         {
-            var song = await DownloadService.DownloadSongByIdAsync(_selectedLyricId, _selectedLyricChecksum);
+            var song = await DownloadService.DownloadSongByIdAsync(SelectedSearchViewModel);
             _downloadedSong = song;
             
         }

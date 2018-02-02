@@ -165,6 +165,7 @@ namespace LyricsManager.ViewModels
             _allSongs.Remove(SelectedSong);
             Songs.Remove(SelectedSong);
             SelectedSong = Songs[0];
+            SaveCommandExecute(null);
         }
 
         /// <summary>

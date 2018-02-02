@@ -17,7 +17,7 @@ namespace LyricsManager.Models
         /// <summary>
         ///     Die Id einer Lyric (entspricht Details eines Songs - von ChartLyrics).
         /// </summary>
-        public int LyricId { get; set; }
+        public long LyricId { get; set; }
         /// <summary>
         ///     Die Web-URL einer Lyric
         /// </summary>
@@ -42,6 +42,15 @@ namespace LyricsManager.Models
         ///     Der Ort des Bildes zu einem Lied
         /// </summary>
         public string ImageUri { get; set; }
-        
+        /// <summary>
+        ///     Information darüber, ob der Song auf Chartlyrics gefunden wurde oder durch eine andere Quelle
+        /// </summary>
+        public bool ChartLyricsApi { get; set; }
+
+        public override string ToString()
+        {
+            return "TrackId: " + TrackId + ", LyricId: " + LyricId + ", Artist: " + LyricArtist + ", Song: " +
+                   LyricSong;
+        }
     }
 }
