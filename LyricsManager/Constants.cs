@@ -6,6 +6,7 @@ namespace LyricsManager
         //Download
         public const string ChartLyricsSearchBaseUrl = "http://api.chartlyrics.com/apiv1.asmx/SearchLyric?";
         public const string ChartLyricsDownloadLyricByIdBaseUrl = "http://api.chartlyrics.com/apiv1.asmx/GetLyric?";
+        public const string ChartLyricsSearchLyricBaseUrl = "http://api.chartlyrics.com/apiv1.asmx/SearchLyricText?";
         public const string MusixmatchSearchBaseUrl = "https://api.musixmatch.com/ws/1.1/track.search?";
         public const string MusixmatchDownloadLyricByIdBaseUrl = "https://api.musixmatch.com/ws/1.1/track.lyrics.get?";
 

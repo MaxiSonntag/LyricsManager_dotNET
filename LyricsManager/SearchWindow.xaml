@@ -38,76 +38,151 @@
         </Style>
     </Window.Resources>
 
-    <StackPanel Margin="12">
-        <Label>Artist</Label>
-        <TextBox Margin="0,0,0,12" 
-                 Text="{Binding EnteredArtist, Mode=TwoWay, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" 
-                 KeyDown="TextBox_OnKeyDown"/>
-        <Label>Song</Label>
-        <TextBox
-            Margin="0,0,0,12"
-            KeyDown="TextBox_OnKeyDown"
-            Text="{Binding EnteredSong, Mode=TwoWay, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
-        <StackPanel
-            Margin="0,12,0,12"
-            HorizontalAlignment="Right"
-            Orientation="Horizontal">
-            <Button
-                Name="SearchButton"
-                Command="{Binding SearchCommand}"
-                Content="Search"
-                IsEnabled="{Binding IsSearchEnabled}" />
+    <TabControl>
+        <TabItem Header="Name">
+            <StackPanel Margin="12">
+                <Label>Artist</Label>
+                <TextBox
+                    Margin="0,0,0,12"
+                    KeyDown="TextBox_OnKeyDown"
+                    Text="{Binding EnteredArtist, Mode=TwoWay, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
+                <Label>Song</Label>
+                <TextBox
+                    Margin="0,0,0,12"
+                    KeyDown="TextBox_OnKeyDown"
+                    Text="{Binding EnteredSong, Mode=TwoWay, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
+                <StackPanel
+                    Margin="0,12,0,12"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal">
+                    <Button
+                        Name="SearchButton"
+                        Command="{Binding SearchCommand}"
+                        Content="Search"
+                        IsEnabled="{Binding IsSearchEnabled}" />
 
-        </StackPanel>
+                </StackPanel>
 
-        <ListBox
-            Name="ListBoxSongs"
-            MinWidth="240"
-            MinHeight="350"
-            MaxHeight="350"
-            Margin="0,0,0,12"
-            BorderThickness="0,0,0,0"
-            DockPanel.Dock="Left"
-            Focusable="True"
-            ItemsSource="{Binding SearchResults, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"
-            SelectedItem="{Binding SelectedSearchViewModel, Mode=TwoWay}">
-            <ListBox.ItemContainerStyle>
-                <Style TargetType="ListBoxItem">
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                </Style>
-            </ListBox.ItemContainerStyle>
-            <ListBox.ItemTemplate>
-                <DataTemplate DataType="viewModels:SongViewModel">
-                    <DockPanel>
-                        <StackPanel Margin="4,4,4,4">
-                            <TextBlock FontSize="18">
-                                <Run Text="{Binding LyricSong}" />
-                                <Run Text=" - " />
-                                <Run Text="{Binding LyricArtist}" />
-                            </TextBlock>
-                        </StackPanel>
-                    </DockPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+                <ListBox
+                    Name="ListBoxSongs"
+                    MinWidth="240"
+                    Height="300"
+                    Margin="0,0,0,12"
+                    BorderThickness="0,0,0,0"
+                    DockPanel.Dock="Left"
+                    Focusable="True"
+                    ItemsSource="{Binding SearchResults, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"
+                    SelectedItem="{Binding SelectedSearchViewModel, Mode=TwoWay}">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="viewModels:SongViewModel">
+                            <DockPanel>
+                                <StackPanel Margin="4,4,4,4">
+                                    <TextBlock FontSize="18">
+                                        <Run Text="{Binding LyricSong}" />
+                                        <Run Text=" - " />
+                                        <Run Text="{Binding LyricArtist}" />
+                                    </TextBlock>
+                                </StackPanel>
+                            </DockPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
 
-        <StackPanel
-            Margin="0,12,0,12"
-            HorizontalAlignment="Right"
-            Orientation="Horizontal">
-            <Button Click="CancelButton_OnClick" Content="Cancel" />
-            <Button
-                Margin="12,0,0,0"
-                Command="{Binding ManualCommand}"
-                Content="Enter manually" />
-            <Button
-                Margin="12,0,0,0"
-                Command="{Binding ApplyCommand}"
-                Content="Apply"
-                IsEnabled="{Binding IsApplyEnabled}" />
+                <StackPanel
+                    Margin="0,12,0,12"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal">
+                    <Button Click="CancelButton_OnClick" Content="Cancel" />
+                    <Button
+                        Margin="12,0,0,0"
+                        Command="{Binding ManualCommand}"
+                        Content="Enter manually" />
+                    <Button
+                        Margin="12,0,0,0"
+                        Command="{Binding ApplyCommand}"
+                        Content="Apply"
+                        IsEnabled="{Binding IsApplyEnabled}" />
 
-        </StackPanel>
-    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </TabItem>
+        <TabItem Header="Lyric" IsSelected="{Binding IsLyricTabEnabled, Mode=TwoWay}">
+            <StackPanel Margin="12">
+                <Label>Part of Lyric</Label>
+                <TextBox
+                    Margin="0,0,0,12"
+                    KeyDown="TextBoxLyric_OnKeyDown"
+                    MinHeight="90"
+                    Text="{Binding EnteredLyric, Mode=TwoWay, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
+                <StackPanel
+                    Margin="0,12,0,12"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal">
+                    <Button
+                        Name="SearchButtonLyric"
+                        Command="{Binding SearchByLyricCommand}"
+                        Content="Search"
+                        IsEnabled="{Binding IsSearchByLyricEnabled}" />
+
+                </StackPanel>
+
+                <ListBox
+                    Name="ListBoxLyricsSongs"
+                    MinWidth="240"
+                    Height="300"
+                    Margin="0,0,0,12"
+                    BorderThickness="0,0,0,0"
+                    DockPanel.Dock="Left"
+                    Focusable="True"
+                    ItemsSource="{Binding SearchResultsLyric, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"
+                    SelectedItem="{Binding SelectedSearchLyricViewModel, Mode=TwoWay}">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="viewModels:SongViewModel">
+                            <DockPanel>
+                                <StackPanel Margin="4,4,4,4">
+                                    <TextBlock FontSize="18">
+                                        <Run Text="{Binding LyricSong}" />
+                                        <Run Text=" - " />
+                                        <Run Text="{Binding LyricArtist}" />
+                                    </TextBlock>
+                                </StackPanel>
+                            </DockPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <StackPanel
+                    Margin="0,12,0,12"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal">
+                    <Button Click="CancelButton_OnClick" Content="Cancel" />
+                    <Button
+                        Margin="12,0,0,0"
+                        Command="{Binding ManualCommand}"
+                        Content="Enter manually" />
+                    <Button
+                        Margin="12,0,0,0"
+                        Command="{Binding ApplyCommand}"
+                        Content="Apply"
+                        IsEnabled="{Binding IsApplyLyricEnabled}" />
+
+                </StackPanel>
+            </StackPanel>
+        </TabItem>
+    </TabControl>
+
+
+
 
 </controls:MetroWindow>
 

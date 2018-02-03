@@ -36,5 +36,16 @@ namespace LyricsManager
                 }
             }
         }
+
+        private void TextBoxLyric_OnKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Return)
+            {
+                if (SearchButtonLyric.IsEnabled)
+                {
+                    SearchButtonLyric.Command.Execute(null);
+                }
+            }
+        }
     }
 }

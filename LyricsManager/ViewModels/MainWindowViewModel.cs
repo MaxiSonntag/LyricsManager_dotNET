@@ -20,6 +20,7 @@ namespace LyricsManager.ViewModels
         ///     Beinhaltet alle Songs
         /// </summary>
         private List<SongViewModel> _allSongs;
+
         /// <summary>
         ///     Beinhaltet die Songs, die aktuell angezeigt werden
         /// </summary>
@@ -44,7 +45,7 @@ namespace LyricsManager.ViewModels
 
         public ObservableCollection<SongViewModel> Songs
         {
-            get => _songs;
+            get => new ObservableCollection<SongViewModel>(_songs.OrderBy(s=>s.LyricSong));
             set => Set(ref _songs, value);
         }
 

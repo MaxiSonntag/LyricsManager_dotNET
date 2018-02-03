@@ -32,8 +32,8 @@ namespace LyricsManager.Services
         public static async Task<List<Song>> DownloadSearchResultsAsync(string artist, string songName)
         {
             var results = new List<Song>();
-            var chartLyricResults = await DownloadChartLyricsSearchResultAsync(artist, songName);
-            var musixmatchResults = await DownloadMusixmatchSearchResultAsync(artist, songName);
+            var chartLyricResults = await DownloadChartLyricsSearchResultAsync(artist, songName, null);
+            var musixmatchResults = await DownloadMusixmatchSearchResultAsync(artist, songName, null);
 
             foreach (var res in musixmatchResults)
             {
@@ -55,10 +55,18 @@ namespace LyricsManager.Services
         /// <param name="artist">Der Name des Künstlers</param>
         /// <param name="songName">Der name des Songs</param>
         /// <returns>Liste aus Suchergebnissen</returns>
-        private static async Task<List<Song>> DownloadChartLyricsSearchResultAsync(string artist, string songName)
+        private static async Task<List<Song>> DownloadChartLyricsSearchResultAsync(string artist, string songName, string lyric)
         {
             await Task.Delay(0);
-            var searchUrl = Constants.ChartLyricsSearchBaseUrl + "artist=" + artist + "&song=" + songName;
+            var searchUrl = "";
+            if (string.IsNullOrEmpty(lyric))
+            {
+                searchUrl = Constants.ChartLyricsSearchBaseUrl + "artist=" + artist + "&song=" + songName;
+            }
+            else
+            {
+                searchUrl = Constants.ChartLyricsSearchLyricBaseUrl + "lyricText=" + lyric;
+            }
 
             searchUrl = Uri.EscapeUriString(searchUrl);
             Console.WriteLine(searchUrl);
@@ -79,7 +87,7 @@ namespace LyricsManager.Services
                     var lyricUrl = doc.ChildNodes[1].ChildNodes[i].ChildNodes[3].InnerText;
                     var lyricArtist = doc.ChildNodes[1].ChildNodes[i].ChildNodes[5].InnerText;
                     var lyricSong = doc.ChildNodes[1].ChildNodes[i].ChildNodes[6].InnerText;
-                    var lyric = "";
+                    var trackLyric = "";
 
                     byte[] bytes = Encoding.Default.GetBytes(lyricArtist);
                     lyricArtist = Encoding.UTF8.GetString(bytes);
@@ -98,7 +106,7 @@ namespace LyricsManager.Services
                             LyricSong = lyricSong,
                             LyricArtist = lyricArtist,
                             LyricUrl = lyricUrl,
-                            Lyric = lyric,
+                            Lyric = trackLyric,
                             LyricRank = 0,
                             ChartLyricsApi = true
                         };
@@ -124,10 +132,21 @@ namespace LyricsManager.Services
         /// <param name="artist">Der Name des Künstlers</param>
         /// <param name="song">Der name des Songs</param>
         /// <returns>Liste aus Suchergebnissen</returns>
-        private static async Task<List<Song>> DownloadMusixmatchSearchResultAsync(string artist, string song)
+        private static async Task<List<Song>> DownloadMusixmatchSearchResultAsync(string artist, string song, string lyric)
         {
             await Task.Delay(0);
-            var searchUrl = Constants.MusixmatchSearchBaseUrl + "format=jsonp&callback=callback&q_track=" + song + "&q_artist=" + artist + "&f_has_lyrics=1&apikey=" + Constants.MusixmatchApiKey;
+            var searchUrl = "";
+            if (String.IsNullOrEmpty(lyric))
+            {
+                searchUrl = Constants.MusixmatchSearchBaseUrl + "format=jsonp&callback=callback&q_track=" + song +
+                            "&q_artist=" + artist + "&f_has_lyrics=1&apikey=" + Constants.MusixmatchApiKey;
+
+            }
+            else
+            {
+                searchUrl = Constants.MusixmatchSearchBaseUrl + "format=jsonp&callback=callback&q_lyrics="+lyric+"&f_has_lyrics=1&apikey=" + Constants.MusixmatchApiKey;
+
+            }
             searchUrl = Uri.EscapeUriString(searchUrl);
             Console.WriteLine(searchUrl);
             var searchResults = new List<Song>();
@@ -151,7 +170,7 @@ namespace LyricsManager.Services
                     var lyricArtist = currentTrack["artist_name"].Value<string>();
                     var lyricSong = currentTrack["track_name"].Value<string>();
                     var imageUri = currentTrack["album_coverart_100x100"].Value<string>();
-                    var lyric = "";
+                    var trackLyric = "";
 
                     if (lyricId != 0)
                     {
@@ -163,7 +182,7 @@ namespace LyricsManager.Services
                             LyricSong = lyricSong,
                             LyricArtist = lyricArtist,
                             LyricUrl = lyricUrl,
-                            Lyric = lyric,
+                            Lyric = trackLyric,
                             LyricRank = 0,
                             ImageUri = imageUri,
                             ChartLyricsApi = false
@@ -181,6 +200,23 @@ namespace LyricsManager.Services
                 throw;
             }
 
+        }
+
+        public static async Task<List<Song>> DownloadSearchResultsForLyricAsync(string lyric)
+        {
+            var result = new List<Song>();
+            
+            var searchResultMusixmatch = await DownloadMusixmatchSearchResultAsync("", "", lyric);
+            var searchResultChartLyrics = await DownloadChartLyricsSearchResultAsync("", "", lyric);
+            foreach (var item in searchResultMusixmatch)
+            {
+                result.Add(item);
+            }
+            foreach (var item in searchResultChartLyrics)
+            {
+                result.Add(item);
+            }
+            return result;
         }
 
 
