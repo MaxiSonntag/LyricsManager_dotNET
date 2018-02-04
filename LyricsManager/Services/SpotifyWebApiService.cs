@@ -69,7 +69,7 @@ namespace LyricsManager.Services
         public string SearchSong()
         {
             var query = SearchedArtist + " " + SearchedSong;
-            string response = "";
+            string response;
             try
             {
                 response = DownloadService.DownloadSpotifySearchResults(query, _spotifyWebApi.AccessToken).Result;

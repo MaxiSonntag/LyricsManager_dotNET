@@ -45,8 +45,8 @@ namespace LyricsManager.ViewModels
 
         public ObservableCollection<SongViewModel> Songs
         {
-            get => new ObservableCollection<SongViewModel>(_songs.OrderBy(s=>s.LyricSong));
-            set => Set(ref _songs, value);
+            get => _songs;
+            set => Set(ref _songs, new ObservableCollection<SongViewModel>(value.OrderBy(s=>s.LyricSong)));
         }
 
         public SongViewModel SelectedSong

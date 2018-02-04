@@ -31,6 +31,9 @@ namespace LyricsManager.ViewModels
         private string _lyric;
         private Song _downloadedSong;
 
+        /// <summary>
+        ///     Eingegebener Künstler (Name-Tab)
+        /// </summary>
         public string EnteredArtist
         {
             get => _artist;
@@ -41,6 +44,9 @@ namespace LyricsManager.ViewModels
             }
         }
 
+        /// <summary>
+        ///     Eingegebener Song (Name-Tab)
+        /// </summary>
         public string EnteredSong
         {
             get => _song;
@@ -51,6 +57,9 @@ namespace LyricsManager.ViewModels
             }
         }
 
+        /// <summary>
+        ///     Eingegebener Songtext (Lyric-Tab)
+        /// </summary>
         public string EnteredLyric
         {
             get => _lyric;
@@ -61,19 +70,27 @@ namespace LyricsManager.ViewModels
             }
         }
 
-
+        /// <summary>
+        ///     Liste der Suchergebnisse (Name-Tab)
+        /// </summary>
         public ObservableCollection<SongViewModel> SearchResults
         {
             get => new ObservableCollection<SongViewModel>(_searchResults.OrderBy(s=>s.LyricSong));
             set => Set(ref _searchResults, value);
         }
 
+        /// <summary>
+        ///     Liste der Suchergebnisse (Lyric-Tab)
+        /// </summary>
         public ObservableCollection<SongViewModel> SearchResultsLyric
         {
             get => new ObservableCollection<SongViewModel>(_searchResultsLyric.OrderBy(s=>s.LyricSong));
             set => Set(ref _searchResultsLyric, value);
         }
 
+        /// <summary>
+        ///     Ausgewählter Listeneintrag (Name-Tab)
+        /// </summary>
         public SongViewModel SelectedSearchViewModel
         {
             get => _selectedSong;
@@ -84,6 +101,9 @@ namespace LyricsManager.ViewModels
             }
         }
 
+        /// <summary>
+        ///     Ausgewählter Listeneintrag (Lyric-Tab)
+        /// </summary>
         public SongViewModel SelectedSearchLyricViewModel
         {
             get => _selectedSongLyric;
@@ -120,6 +140,9 @@ namespace LyricsManager.ViewModels
         /// </summary>
         public bool IsApplyEnabled => SelectedSearchViewModel != null && SelectedSearchViewModel.LyricId != -1;
 
+        /// <summary>
+        ///     Information ob valides Suchergebnis selektiert ist (Lyric-Tab)
+        /// </summary>
         public bool IsApplyLyricEnabled =>
             SelectedSearchLyricViewModel != null && SelectedSearchLyricViewModel.LyricId != -1;
         /// <summary>
@@ -127,6 +150,9 @@ namespace LyricsManager.ViewModels
         /// </summary>
         public bool IsSearchByLyricEnabled => !string.IsNullOrWhiteSpace(EnteredLyric);
 
+        /// <summary>
+        ///     Information ob aktuell der Lyrics-Tab asugewählt ist oder ein anderer
+        /// </summary>
         public bool IsLyricTabEnabled { get; set; }
 
         public SearchWindowViewModel()
@@ -142,6 +168,9 @@ namespace LyricsManager.ViewModels
             _downloadedSong = new Song();
         }
 
+        /// <summary>
+        ///     Sucht nach verfügbaren Lyrics (Name-Tab)
+        /// </summary>
         private void SearchCommandExecute(object obj)
         {
             if (SearchResults.Count != 0)
@@ -152,6 +181,9 @@ namespace LyricsManager.ViewModels
             Task.Run(SearchSongsAsync);
         }
 
+        /// <summary>
+        ///     Sucht nach verfügbaren Lyrics (Lyric-Tab)
+        /// </summary>
         private void SearchByLyricCommandExecute(object obj)
         {
             if (SearchResults.Count != 0)
@@ -219,6 +251,10 @@ namespace LyricsManager.ViewModels
             
         }
 
+        /// <summary>
+        ///     Sucht nach verfügbaren Lyrics (Lyric-Tab)
+        /// </summary>
+        /// <returns></returns>
         private async Task SearchSongByLyricAsync()
         {
             List<Song> list = await DownloadService.DownloadSearchResultsForLyricAsync(_lyric);

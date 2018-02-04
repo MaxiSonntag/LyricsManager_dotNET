@@ -37,6 +37,9 @@ namespace LyricsManager
             }
         }
 
+        /// <summary>
+        ///     Ermöglicht die Ausführung der Suche beim Betätigen der Enter-Taste (Lyric-Tab)
+        /// </summary>
         private void TextBoxLyric_OnKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Return)

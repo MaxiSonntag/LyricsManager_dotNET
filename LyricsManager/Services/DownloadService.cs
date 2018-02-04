@@ -53,12 +53,13 @@ namespace LyricsManager.Services
         ///     Lädt die Suchergebnisse zu einem Song von der ChartLyrics-API herunter.
         /// </summary>
         /// <param name="artist">Der Name des Künstlers</param>
-        /// <param name="songName">Der name des Songs</param>
+        /// <param name="songName">Der Name des Songs</param>
+        /// <param name="lyric">Der Songtext (bzw. Teil eines Songtextes)</param>
         /// <returns>Liste aus Suchergebnissen</returns>
         private static async Task<List<Song>> DownloadChartLyricsSearchResultAsync(string artist, string songName, string lyric)
         {
             await Task.Delay(0);
-            var searchUrl = "";
+            string searchUrl;
             if (string.IsNullOrEmpty(lyric))
             {
                 searchUrl = Constants.ChartLyricsSearchBaseUrl + "artist=" + artist + "&song=" + songName;
@@ -130,12 +131,13 @@ namespace LyricsManager.Services
         ///     Lädt die Suchergebnisse zu einem Song von der Musixmatch-API herunter.
         /// </summary>
         /// <param name="artist">Der Name des Künstlers</param>
-        /// <param name="song">Der name des Songs</param>
+        /// <param name="song">Der Name des Songs</param>
+        /// <param name="lyric">Der Songtext (bzw. Teil eines Songtextes)</param>
         /// <returns>Liste aus Suchergebnissen</returns>
         private static async Task<List<Song>> DownloadMusixmatchSearchResultAsync(string artist, string song, string lyric)
         {
             await Task.Delay(0);
-            var searchUrl = "";
+            string searchUrl;
             if (String.IsNullOrEmpty(lyric))
             {
                 searchUrl = Constants.MusixmatchSearchBaseUrl + "format=jsonp&callback=callback&q_track=" + song +
@@ -202,20 +204,17 @@ namespace LyricsManager.Services
 
         }
 
+        /// <summary>
+        ///     Führt den Download von verfügbaren Lyrics aus (Lyric-Tab)
+        /// </summary>
+        /// <param name="lyric"></param>
+        /// <returns></returns>
         public static async Task<List<Song>> DownloadSearchResultsForLyricAsync(string lyric)
         {
-            var result = new List<Song>();
-            
             var searchResultMusixmatch = await DownloadMusixmatchSearchResultAsync("", "", lyric);
             var searchResultChartLyrics = await DownloadChartLyricsSearchResultAsync("", "", lyric);
-            foreach (var item in searchResultMusixmatch)
-            {
-                result.Add(item);
-            }
-            foreach (var item in searchResultChartLyrics)
-            {
-                result.Add(item);
-            }
+            var result = searchResultMusixmatch.ToList();
+            result.AddRange(searchResultChartLyrics);
             return result;
         }
 
